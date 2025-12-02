@@ -16,9 +16,9 @@ class Atracao(BaseModel):
 
     categoria = models.ForeignKey(
         Categoria,
-        on_delete=models.SET_NULL, # A good choice: if the category is deleted, keep the attraction but set category to NULL
+        on_delete=models.SET_NULL, 
         related_name='atracoes',
-        null=True, # Allows the field to be set to NULL if the category is deleted
+        null=True, 
         verbose_name="Categoria"
     )
 
@@ -34,7 +34,9 @@ class Atracao(BaseModel):
     viagens = models.ManyToManyField(
         'Viagem', 
         related_name='atracoes_incluidas',
-        verbose_name="Viagens Incluídas"
+        verbose_name="Viagens Incluídas",
+        blank=True,
+        null=True
     )
 
     class Meta:

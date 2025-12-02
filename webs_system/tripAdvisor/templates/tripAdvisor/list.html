@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  {% if atracoes %}
+    <!-- Title reflects the model being listed -->
+    <h1>Lista de Atrações</h1>
+  {% else %}
+    <h1>Nenhuma Atração cadastrada</h1>
+  {% endif %}
+
+{% endblock title %}
+
+{% block content %}
+
+{% if atracoes %}
+  <div class="mb-3">
+    
+    {% if perms.tripAdvisor.add_atracao %}
+      <a class="btn btn-outline-success btn-lg"
+        data-bs-toggle="tooltip" data-bs-placement="top"
+        title="Adicionar nova atração"
+        href=""> 
+        <i class="bi bi-plus-circle"></i>
+      </a>
+    {% endif %}
+  </div>
+    <table class ="table table-hover">
+      <thead>
+        <th>ID</th>
+        <th>Nome</th>
+        <th>Descrição</th>
+        <th>Opções</th>
+      </thead>
+      <tbody>
+      {% for atracao in atracoes %}
+        <tr>
+          <td>{{ atracao.id }}</td>
+          
+          <td>{{ atracao.nome }}</td>
+          <td>{{ atracao.descricao|truncatechars:50 }}</td>
+          <td>
+            <div>
+              
+              {% if perms.tripAdvisor.view_atracao %}
+                <a class="btn btn-outline-secondary btn-lg" role="button"
+                    data-bs-toggle="tooltip" data-bs-placement="top" title="Detalhar Atração"
+                    href="">
+                  <i class="bi bi-eye"></i></a>
+              {% endif %}
+              
+              {% if perms.tripAdvisor.change_atracao %}
+                <a class="btn btn-outline-secondary btn-lg" role="button"
+                    data-bs-toggle="tooltip" data-bs-placement="top" title="Atualizar"
+                    
+                    href="">
+                      <i class="bi bi-pencil-square"></i></a>
+              {% endif %}
+
+              {% if perms.tripAdvisor.delete_atracao %}
+                <a class="btn btn-outline-secondary btn-lg"
+                  role="button"
+                  data-bs-toggle="tooltip"
+                  data-bs-placement="top"
+                  title="Deletar"
+                  href="">
+                  <i class="bi bi-trash"></i>
+                </a>
+              {% endif %}
+            </div>
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+{% endif %}
+{% endblock content %}
+
+<!-- {% url 'tripAdvisor:atracao_create' %}
+{% url 'tripAdvisor:atracao_read' atracao.id %}
+{% url 'tripAdvisor:atracao_update' atracao.id %}
+{% url 'tripAdvisor:atracao_delete' atracao.id %}
+-->

@@ -15,16 +15,22 @@
         <li class="nav-item">
           <a class="nav-link" href="">Botão 0</a>
         </li>
+        {% if request.user.is_superuser %}
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             Opções
           </a>
+          
           <ul class="dropdown-menu">
             <li><a class="dropdown-item" href="">Botao 1</a></li>
             <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="{% url 'listarAtracoes' %}">Atrações</a></li>
+            <li><a class="dropdown-item" href="#">Mais botoes</a></li>
             <li><a class="dropdown-item" href="#">Mais botoes</a></li>
           </ul>
+          
         </li>
+        {% endif %}
         <li class="nav-item">
           <a class="nav-link disabled" aria-disabled="true">Disabled</a>
         </li>

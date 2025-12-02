@@ -3,6 +3,7 @@ from django.contrib.auth import login
 from django.db import transaction
 from django.views import View 
 from django.urls import reverse_lazy
+from django.contrib.auth.models import Group
 from ..forms import UserRegistrationForm, PerfilDataForm 
 from ..models import Perfil
 
@@ -31,6 +32,13 @@ class RegisterUserView(View):
             try:
                 with transaction.atomic():
                     user = user_form.save() 
+
+                    try:
+                        comum_group = Group.objects.get(name='Comum')
+                        user.groups.add(comum_group)
+                    except Group.DoesNotExist:
+                        print("WARNING: Django Grupo 'Comum' nao existe.")
+
                     perfil_data = perfil_form.cleaned_data
                     Perfil.objects.create(
                         user=user, 
