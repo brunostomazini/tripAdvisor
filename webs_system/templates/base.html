@@ -1,0 +1,16 @@
+{% extends 'menu.html' %}
+
+{% block main %}
+    <div >
+        {% block title %}
+        <h1>Titulo</h1>
+        {% endblock title %}
+        <hr>
+    </div>
+    <div>
+        {% block content %}
+            <h2>Conteudo</h2>
+        {% endblock content %}
+        <hr>
+    </div>
+{% endblock main %}

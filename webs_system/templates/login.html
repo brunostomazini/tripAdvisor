@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block title %}
+<h1>Login no Web System</h1>
+{% endblock title %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-4">
+        <div class="card shadow p-4 mt-5">
+            <h2 class="text-center mb-4">Acesso de Usuário</h2>
+            
+            {% if form.errors %}
+                <div class="alert alert-danger" role="alert">
+                    Usuário ou senha inválidos. Por favor, tente novamente.
+                </div>
+            {% endif %}
+
+            <form id="login" action="{% url 'login' %}" method="post">
+                {% csrf_token %}
+                
+                {% for field in form %}
+                    <div class="mb-3">
+                        {{ field.label_tag }} 
+                        
+                        {{ field }}
+                        
+                        {% if field.help_text %}
+                            <div class="form-text">{{ field.help_text|safe }}</div>
+                        {% endif %}
+                        
+                        {% if field.errors %}
+                            <div class="invalid-feedback d-block">{{ field.errors }}</div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+
+                {% if next %}
+                    <input type="hidden" name="next" value="{{ next }}">
+                {% else %}
+                    <input type="hidden" name="next" value="{% url 'index' %}">
+                {% endif %}
+
+                <div class="d-grid gap-2 mt-4">
+                    <button type="submit" class="btn btn-primary btn-lg" form="login" value="login">
+                        <i class="bi bi-box-arrow-in-right"></i> Entrar
+                    </button>
+                </div>
+                
+                <div class="mt-3 text-center">
+                    <a href="{% url 'password_reset' %}" class="text-secondary text-decoration-none">
+                        <i class="bi bi-shield-exclamation"></i> Esqueci minha senha
+                    </a> 
+                </div>
+
+                <div class="mt-3 text-center">
+                    <hr class="my-3">
+                    <a href="{% url 'register' %}" class="btn btn-outline-success w-100">
+                        <i class="bi bi-person-plus-fill"></i> Criar uma Conta
+                    </a> 
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}
