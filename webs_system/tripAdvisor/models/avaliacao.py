@@ -11,7 +11,7 @@ class Avaliacao(BaseModel):
     texto = models.TextField(validators=[MinLengthValidator(50)])
     nota = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(10)])
     data_visita = models.DateField()
-    data_avaliacao = models.DateField(default=date.today())
+    data_avaliacao = models.DateField(auto_now_add=True)
     likes = models.IntegerField(default=0, validators=[MinValueValidator(0)])
 
     atracao = models.ForeignKey(

@@ -1,3 +1,58 @@
+from django.shortcuts import render, redirect
+from django.contrib.auth import login
+from django.db import transaction
+from django.views import View 
+from django.urls import reverse_lazy
+from ..forms import UserRegistrationForm, PerfilDataForm 
+from ..models import Perfil
 
-class RegisterUserView():
-    pass
+
+class RegisterUserView(View):
+    template_name = 'tripAdvisor/register.html'
+    success_url = reverse_lazy('index')
+
+    def get(self, request):
+        user_form = UserRegistrationForm()
+        perfi_form = PerfilDataForm()
+
+        context = {
+            'user_form': user_form,
+            'perfi_form': perfi_form,
+            'title': "Registro de Conta"
+        }
+
+        return render(request, self.template_name, context)
+
+    def post(self, request):
+        user_form = UserRegistrationForm(request.POST)
+        perfil_form = PerfilDataForm(request.POST)
+
+        if user_form.is_valid() and perfil_form.is_valid():
+            try:
+                with transaction.atomic():
+                    user = user_form.save() 
+                    perfil_data = perfil_form.cleaned_data
+                    Perfil.objects.create(
+                        user=user, 
+                        email=user.email,
+                        nome=perfil_data['perfil_nome'],
+                        passaporte=perfil_data['passaporte'],
+                        data_nascimento=perfil_data['data_nascimento'],
+                        pais=perfil_data['pais'],
+                        genero=perfil_data['genero'],
+                        pagina_pessoal=perfil_data.get('pagina_pessoal'),
+                        biografia=perfil_data.get('biografia'),
+                        lingua=perfil_data.get('lingua'),
+                    )
+                    login(request, user)
+                    return redirect(self.success_url) 
+            except Exception as e:
+                user_form.add_error(None, "Ocorreu um erro de sistema durante o cadastro. Tente novamente.")
+                print(f"Registration transaction failed: {e}") 
+
+        context = {
+            'user_form': user_form,
+            'perfil_form': perfil_form,
+            'title': 'Registro de Conta'
+        }
+        return render(request, self.template_name, context)

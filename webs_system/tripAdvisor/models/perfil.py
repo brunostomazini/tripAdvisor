@@ -33,5 +33,5 @@ class Perfil(BaseModel):
         if self.data_nascimento:
             adulto = date.today().replace(year=date.today().year - 18)
 
-        if self.data_nascimento > adulto:
-            raise ValidationError({'data_nascimento':"Usuario precisa ter 18 anos ou mais!"})
+            if self.data_nascimento > adulto:
+                raise ValidationError({'data_nascimento':"Usuario precisa ter 18 anos ou mais!"})
