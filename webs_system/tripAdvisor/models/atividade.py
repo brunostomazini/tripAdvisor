@@ -18,6 +18,8 @@ class Atividade(Atracao):
     class Meta:
         verbose_name = "Atividade"
         verbose_name_plural = "Atividades"
+        
+        
     
     def __str__(self):
         return f"Atividade:{self.nome}"

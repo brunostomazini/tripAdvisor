@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  <!-- Usa o nome do objeto e o nome da classe para o título -->
+  <h1>Detalhes da Atração: {{ object.nome }}</h1>
+{% endblock title %}
+
+{% block content %}
+
+
+<div class="row justify-content-center mt-5">
+  <div class="col-md-10 col-lg-8">
+    
+    <div class="card shadow-lg p-5">
+      
+      <div class="card-title text-center mb-4 border-bottom pb-3">
+        <h2 class="display-5 font-weight-bold text-primary">{{ object.nome }}</h2>
+        <!-- AGORA, model_name vem do contexto da View (LocalDetailView ou AtividadeDetailView) -->
+        <span class="badge bg-secondary">{{ model_name|capfirst }}</span>
+      </div>
+
+      <!-- Detalhes Comuns (da Superclasse Atracao) -->
+      <div class="mb-4">
+        <h3 class="h5 text-muted border-bottom pb-1 mb-3">Informações Gerais</h3>
+        <p><strong>ID:</strong> {{ object.pk }}</p>
+        <p><strong>Descrição:</strong> {{ object.descricao|default:"Nenhuma descrição fornecida." }}</p>
+        <p><strong>Data de Cadastro:</strong> {{ object.data_cadastro|date:"d/m/Y H:i" }}</p>
+      </div>
+      
+      <!-- Detalhes Específicos do Modelo (Exemplo para Local) -->
+      {% if model_name == 'local' %}
+        <div class="mb-4">
+          <h3 class="h5 text-muted border-bottom pb-1 mb-3">Detalhes de Local</h3>
+          <!-- Adapte para exibir os campos exclusivos de Local, como Endereco ou Site -->
+          <p><strong>Endereço:</strong> 
+            {% if object.endereco %}
+              {{ object.endereco }}
+            {% else %}
+              <span class="text-warning">Endereço não cadastrado.</span>
+            {% endif %}
+          </p>
+          <p><strong>Site Oficial:</strong> 
+            {% if object.site %}
+              <a href="{{ object.site }}" target="_blank">{{ object.site }}</a>
+            {% else %}
+              -
+            {% endif %}
+          </p>
+        </div>
+      {% elif model_name == 'atividade' %}
+        <div class="mb-4">
+          <h3 class="h5 text-muted border-bottom pb-1 mb-3">Detalhes de Atividade</h3>
+          <!-- Adapte para exibir os campos exclusivos de Atividade, como Duracao ou Preco -->
+          <p><strong>Duração Estimada:</strong> {{ object.duracao|default:"Não especificado" }}</p>
+          <p><strong>Preço Médio:</strong> R$ {{ object.preco|default:"0.00"|floatformat:2 }}</p>
+        </div>
+      {% endif %}
+
+
+      <!-- Botões de Ação (Apenas Voltar) -->
+      <div class="mt-4 pt-4 border-top d-flex justify-content-center">
+        
+        <!-- Botão Voltar para a Lista -->
+        <a href="{% url 'tripAdvisor:listarAtracoes' %}" class="btn btn-outline-secondary btn-lg w-50">
+          <i class="bi bi-arrow-left"></i> Voltar para a Lista
+        </a>
+        
+      </div>
+
+    </div>
+  </div>
+</div>
+
+{% endblock content %}

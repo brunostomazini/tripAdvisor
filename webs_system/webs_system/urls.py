@@ -13,7 +13,7 @@ urlpatterns = [
 
     path('', index, name="index"),
 
-    path('tripadvisor/', include('tripAdvisor.urls')),
+    path('tripAdvisor/', include('tripAdvisor.urls', namespace='tripAdvisor')),
     
     path('accounts/login/', auth_views.LoginView.as_view(template_name = "login.html", authentication_form = CustomLoginForm), name='login'),
 

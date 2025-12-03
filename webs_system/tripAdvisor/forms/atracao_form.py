@@ -5,4 +5,3 @@ class AtracaoForm(BaseForm):
     class Meta:
         model = Atracao
         fields = '__all__'
-

@@ -19,7 +19,7 @@
       <a class="btn btn-outline-success btn-lg"
         data-bs-toggle="tooltip" data-bs-placement="top"
         title="Adicionar nova atração"
-        href=""> 
+        href="{% url 'tripAdvisor:local_create' %}"> 
         <i class="bi bi-plus-circle"></i>
       </a>
     {% endif %}
@@ -44,7 +44,7 @@
               {% if perms.tripAdvisor.view_atracao %}
                 <a class="btn btn-outline-secondary btn-lg" role="button"
                     data-bs-toggle="tooltip" data-bs-placement="top" title="Detalhar Atração"
-                    href="">
+                    href="{% url 'tripAdvisor:local_detail' atracao.id %}">
                   <i class="bi bi-eye"></i></a>
               {% endif %}
               
@@ -62,7 +62,7 @@
                   data-bs-toggle="tooltip"
                   data-bs-placement="top"
                   title="Deletar"
-                  href="">
+                  href="{% url 'tripAdvisor:local_delete' atracao.id %}">
                   <i class="bi bi-trash"></i>
                 </a>
               {% endif %}
@@ -75,7 +75,7 @@
 {% endif %}
 {% endblock content %}
 
-<!-- {% url 'tripAdvisor:atracao_create' %}
+<!-- 
 {% url 'tripAdvisor:atracao_read' atracao.id %}
 {% url 'tripAdvisor:atracao_update' atracao.id %}
 {% url 'tripAdvisor:atracao_delete' atracao.id %}
