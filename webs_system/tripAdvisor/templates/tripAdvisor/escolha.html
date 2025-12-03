@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}
+<h1>Escolha o Tipo de Atração</h1>
+{% endblock title %}
+
+{% block content %}
+<div class="d-flex flex-column align-items-center justify-content-center py-5">
+    <h2 class="mb-4 text-center text-primary-emphasis">Qual tipo de atração você gostaria de cadastrar?</h2>
+    <p class="text-center text-muted mb-5">
+        Selecione a modalidade correta para garantir que todos os campos específicos sejam preenchidos.
+    </p>
+
+    <div class="row g-4 w-100" style="max-width: 800px;">
+        
+        <!-- Opção 1: Local -->
+        <div class="col-md-6">
+            <div class="card h-100 shadow-lg border-primary-subtle text-center">
+                <div class="card-body d-flex flex-column justify-content-center align-items-center">
+                    <i class="bi bi-geo-alt-fill text-primary display-3 mb-3"></i>
+                    <h5 class="card-title text-primary">Local</h5>
+                    <p class="card-text text-muted">
+                        Cadastre um ponto fixo, como museus, monumentos, praias ou restaurantes.
+                    </p>
+
+                    <a href="{% url 'tripAdvisor:local_create' %}" class="btn btn-primary mt-3 w-75">
+                        Criar Local
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Opção 2: Atividade -->
+        <div class="col-md-6">
+            <div class="card h-100 shadow-lg border-success-subtle text-center">
+                <div class="card-body d-flex flex-column justify-content-center align-items-center">
+                    <i class="bi bi-clock-history text-success display-3 mb-3"></i>
+                    <h5 class="card-title text-success">Atividade</h5>
+                    <p class="card-text text-muted">
+                        Cadastre eventos com duração definida, como tours guiados, shows ou trilhas.
+                    </p>
+                    <!-- O URL 'criar_atividade' será definido no urls.py -->
+                    <a href="{% url 'tripAdvisor:atividade_create' %}" class="btn btn-success mt-3 w-75">
+                        Criar Atividade
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

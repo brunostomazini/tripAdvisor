@@ -1,8 +1,4 @@
-asgiref==3.9.1
+asgiref==3.11.0
 Django==5.0
-graphviz==0.21
-mysql-connector-python==9.1.0
-mysqlx-connector-python==9.1.0
-protobuf==4.25.3
-sqlparse==0.5.3
+sqlparse==0.5.4
 tzdata==2025.2

@@ -45,3 +45,8 @@ class Atracao(BaseModel):
 
     def __str__(self):
         return f"Atração:{self.nome} - Nota:{self.nota}"
+    
+    def get_model_name(self):
+        """Retorna o nome da classe do modelo (Ex: 'local' ou 'atividade') em minúsculas."""
+        # Usa _meta.model_name que é a forma canônica e segura no Django
+        return self._meta.model_name

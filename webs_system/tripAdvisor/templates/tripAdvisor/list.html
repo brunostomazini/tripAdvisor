@@ -1,8 +1,9 @@
 {% extends 'base.html' %}
+{% load humanize %}
+
 
 {% block title %}
   {% if atracoes %}
-    <!-- Title reflects the model being listed -->
     <h1>Lista de Atrações</h1>
   {% else %}
     <h1>Nenhuma Atração cadastrada</h1>
@@ -19,32 +20,37 @@
       <a class="btn btn-outline-success btn-lg"
         data-bs-toggle="tooltip" data-bs-placement="top"
         title="Adicionar nova atração"
-        href="{% url 'tripAdvisor:local_create' %}"> 
+        href="{% url 'tripAdvisor:atracao_create' %}"> 
         <i class="bi bi-plus-circle"></i>
       </a>
     {% endif %}
   </div>
     <table class ="table table-hover">
       <thead>
-        <th>ID</th>
-        <th>Nome</th>
-        <th>Descrição</th>
-        <th>Opções</th>
+        <tr>
+          <th>ID</th>
+          <th>Nome</th>
+          <th>Descrição</th>
+          <th>Opções</th>
+        </tr>
       </thead>
       <tbody>
       {% for atracao in atracoes %}
+        <!-- CORRIGIDO: Usa o método 'get_model_name' em vez de acessar __class__ diretamente -->
+        {% with model_name=atracao.get_model_name %}
         <tr>
           <td>{{ atracao.id }}</td>
           
           <td>{{ atracao.nome }}</td>
           <td>{{ atracao.descricao|truncatechars:50 }}</td>
           <td>
-            <div>
+            <div class="d-flex gap-2">
               
               {% if perms.tripAdvisor.view_atracao %}
+                <!-- URL dinâmico: tripAdvisor:local_detail ou tripAdvisor:atividade_detail -->
                 <a class="btn btn-outline-secondary btn-lg" role="button"
                     data-bs-toggle="tooltip" data-bs-placement="top" title="Detalhar Atração"
-                    href="{% url 'tripAdvisor:local_detail' atracao.id %}">
+                    href="{% url 'tripAdvisor:'|add:model_name|add:'_detail' pk=atracao.pk %}">
                   <i class="bi bi-eye"></i></a>
               {% endif %}
               
@@ -52,7 +58,7 @@
                 <a class="btn btn-outline-secondary btn-lg" role="button"
                     data-bs-toggle="tooltip" data-bs-placement="top" title="Atualizar"
                     
-                    href="">
+                    href="{% url 'tripAdvisor:'|add:model_name|add:'_update' pk=atracao.pk %}">
                       <i class="bi bi-pencil-square"></i></a>
               {% endif %}
 
@@ -62,13 +68,14 @@
                   data-bs-toggle="tooltip"
                   data-bs-placement="top"
                   title="Deletar"
-                  href="{% url 'tripAdvisor:local_delete' atracao.id %}">
+                  href="{% url 'tripAdvisor:'|add:model_name|add:'_delete' pk=atracao.pk %}">
                   <i class="bi bi-trash"></i>
                 </a>
               {% endif %}
             </div>
           </td>
         </tr>
+        {% endwith %}
       {% endfor %}
       </tbody>
     </table>
@@ -76,6 +83,9 @@
 {% endblock content %}
 
 <!-- 
+{% url 'tripAdvisor:local_delete' atracao.id %}
+{% url 'tripAdvisor:local_create' %}
+
 {% url 'tripAdvisor:atracao_read' atracao.id %}
 {% url 'tripAdvisor:atracao_update' atracao.id %}
 {% url 'tripAdvisor:atracao_delete' atracao.id %}

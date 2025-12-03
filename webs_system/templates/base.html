@@ -1,16 +1,12 @@
 {% extends 'menu.html' %}
 
 {% block main %}
-    <div >
-        {% block title %}
-        <h1>Titulo</h1>
-        {% endblock title %}
-        <hr>
-    </div>
-    <div>
-        {% block content %}
-            <h2>Conteudo</h2>
-        {% endblock content %}
+    <div class="container py-4">
+        <div>
+            {% block content %}
+                <h2 class="text-muted text-center">Nenhum Conteúdo Específico Definido.</h2>
+            {% endblock content %}
+        </div>
         <hr>
     </div>
 {% endblock main %}
