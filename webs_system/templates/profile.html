@@ -2,7 +2,7 @@
 
 {% block title %}<h1>Perfil do Usuário</h1>{% endblock title %}
 
-{% block content %}
+{% block left %}
 <div class="card border-primary-subtle shadow rounded-3">
   <div class="card-header text-primary-emphasis bg-primary-subtle border
   border-primary-subtle rounded-3 mb-3 text-white text-center">
@@ -32,10 +32,7 @@
 
     <!-- Ações -->
     <div class="mt-4 d-flex justify-content-center gap-3">
-      <form action="{% url 'logout' %}" method="post" class="d-inline-block">
-        {% csrf_token %}
-        <button type="submit" class="btn btn-outline-danger">Logout</button>
-      </form>
+      <a href="{% url 'logout' %}" class="btn btn-outline-danger">Logout</a>
       <a href="{% url 'password_change' %}" class="btn btn-outline-secondary">Alterar Senha</a>
     </div>
   </div>
