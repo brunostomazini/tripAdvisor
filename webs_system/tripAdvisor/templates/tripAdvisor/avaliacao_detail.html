@@ -1,0 +1,145 @@
+{% extends 'minimal.html' %}
+{% load static %}
+
+{% block title %}
+
+<h1>Detalhe da Avaliação</h1>
+{% endblock title %}
+
+{% block main %}
+
+<div class="container my-5">
+<div class="row justify-content-center">
+<div class="col-lg-10">
+<!-- Cartão Principal da Avaliação -->
+<div class="card shadow-lg border-0 mb-4">
+<div class="card-header bg-primary text-white p-4">
+<h2 class="mb-0">{{ avaliacao.titulo }}</h2>
+<!-- Nota da Avaliação -->
+<p class="fs-4 text-warning mb-0 mt-2">
+{% for i in "12345"|make_list %}
+{% if forloop.counter <= avaliacao.nota %}
+<i class="bi bi-star-fill"></i>
+{% else %}
+<i class="bi bi-star"></i>
+{% endif %}
+{% endfor %}
+<small class="text-white-50">({{ avaliacao.nota }}/5)</small>
+</p>
+</div>
+
+<!-- Card Body da Avaliação: Fundo Escuro -->
+
+<div class="card-body p-5 bg-dark text-light">
+
+<h5 class="text-light">Conteúdo da Avaliação:</h5>
+<!-- Bloco de Conteúdo da Avaliação: Fundo Escuro Secundário para contraste -->
+<div class="bg-secondary p-3 border rounded mb-4">
+<p class="card-text text-white">{{ avaliacao.texto|linebreaksbr }}</p>
+</div>
+
+<hr class="my-4 border-light">
+
+<div class="row">
+<div class="col-md-6">
+<h6 class="text-light">Avaliador:</h6>
+<p class="fw-bold">{{ avaliacao.perfil.nome }}</p>
+</div>
+<div class="col-md-6 text-md-end">
+<h6 class="text-light">Data da Criação:</h6>
+<p class="fw-bold">{{ avaliacao.data_avaliacao|date:"d/m/Y" }}</p>
+</div>
+</div>
+
+</div>
+
+<!-- Cartão principal: Rodapé Escuro -->
+
+<div class="card-footer bg-dark d-flex justify-content-start p-4">
+
+<!-- Botão Único: Voltar para o Perfil -->
+
+<a href="{% url 'profile' %}" class="btn btn-secondary">
+<i class="bi bi-arrow-left me-2"></i> Voltar para o Perfil
+</a>
+
+</div>
+
+</div>
+<!-- Cartão com Detalhes da Atração -->
+<div class="card shadow-lg border-info">
+<div class="card-header bg-info text-white p-3">
+<h3 class="mb-0">Atração Avaliada: {{ avaliacao.atracao.nome }}</h3> <!-- Usa o atributo 'nome' da Atracao -->
+</div>
+<!-- Card Body da Atração: Fundo Escuro -->
+<div class="card-body p-4 bg-dark text-light">
+<div class="row">
+
+<!-- Informação principal da Atração -->
+
+<div class="col-md-12 mb-3">
+<h6 class="text-light">Nota Média da Atração:</h6>
+<!-- Usa o atributo 'nota' da Atracao -->
+<p class="fs-4 text-warning fw-bold">{{ avaliacao.atracao.nota }} / 10</p>
+</div>
+
+<div class="col-md-12 mb-3">
+<h6 class="text-light">Categoria:</h6>
+<!-- Assumindo que o ForeignKey categoria tem um str útil -->
+<p class="fw-bold">{{ avaliacao.atracao.categoria|default:"N/A" }}</p>
+</div>
+
+<div class="col-md-12 mb-3">
+<h6 class="text-light">Endereço Físico:</h6>
+<!-- Assumindo que o ForeignKey endereco tem um str útil -->
+<p class="fw-bold">{{ avaliacao.atracao.endereco|default:"Não informado" }}</p>
+</div>
+
+<hr class="my-3 border-light">
+
+<div class="col-md-12 mb-3">
+<h6 class="text-light">Informações Detalhadas:</h6>
+<!-- Usa o atributo 'informacoes' da Atracao -->
+<p>{{ avaliacao.atracao.informacoes|linebreaksbr }}</p>
+</div>
+
+<!-- Informações de contato e preço -->
+
+<div class="col-md-6 mb-3">
+<h6 class="text-light">Telefone:</h6>
+<!-- Usa o atributo 'telefone' da Atracao -->
+<p class="fw-bold">{{ avaliacao.atracao.telefone|default:"N/A" }}</p>
+</div>
+<div class="col-md-6 mb-3">
+<h6 class="text-light">Site:</h6>
+<!-- Usa o atributo 'site' da Atracao -->
+<p><a href="{{ avaliacao.atracao.site }}" target="_blank" class="text-info">{{ avaliacao.atracao.site }}</a></p>
+</div>
+
+<div class="col-md-12">
+<h6 class="text-light">Ingresso Necessário:</h6>
+<!-- Lógica baseada nos atributos 'ingresso' e 'valor' da Atracao -->
+<p class="fw-bold">
+{% if avaliacao.atracao.ingresso %}
+Sim. Valor: R$ {{ avaliacao.atracao.valor|default:"N/A" }}
+{% else %}
+Não
+{% endif %}
+</p>
+</div>
+
+</div>
+</div>
+
+<!-- Cartão Atração: Rodapé Escuro -->
+
+<div class="card-footer bg-dark text-end p-3">
+<!-- Rodapé vazio, mantido escuro por consistência -->
+</div>
+</div>
+
+</div>
+
+</div>
+
+{% endblock main %}

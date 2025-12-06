@@ -36,7 +36,7 @@ logger = logging.getLogger(__name__)
 
 class LocalAndAtividadeListView(TemplateView):
 
-    template_name = 'menu.html'
+    template_name = 'menu.html' # ou 'listagem_combinada.html' dependendo de onde o template está
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -47,12 +47,24 @@ class LocalAndAtividadeListView(TemplateView):
         atividades_qs = Atividade.objects.all().order_by('nome') 
         
         if query:
-
-            local_filter = Q(nome__icontains=query) | Q(endereco__cidade__icontains=query)
+            # Construindo filtros de Local: 
+            # 1. Nome do Local (nome__icontains)
+            # 2. Nome da Cidade (endereco__cidade__icontains)
+            # 3. NOME DO PAÍS (endereco__pais__icontains) - O lookup foi simplificado para corrigir o FieldError
+            local_filter = (
+                Q(nome__icontains=query) | 
+                Q(endereco__cidade__icontains=query) | 
+                Q(endereco__pais__icontains=query) # Novo filtro para País (Corrigido o lookup)
+            )
             
             locais_qs = locais_qs.filter(local_filter)
+            
+            # Filtros de Atividade:
+            # 1. Nome da Atividade (nome__icontains)
+            # 2. Categoria da Atividade (categoria__nome__icontains)
             atividade_filter = Q(nome__icontains=query) | Q(categoria__nome__icontains=query)
             atividades_qs = atividades_qs.filter(atividade_filter)
+            
             context['search_query'] = query
 
         locais = list(locais_qs)

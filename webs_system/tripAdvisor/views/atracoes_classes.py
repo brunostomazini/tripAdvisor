@@ -8,6 +8,7 @@ from django.db import transaction
 from ..models import Local, Atividade 
 from ..forms import *
 
+
 class AtracaoCrudMixin(LoginRequiredMixin, PermissionRequiredMixin):
     login_url = reverse_lazy('login')
     template_name = 'tripAdvisor/crud_form.html' 
@@ -30,35 +31,47 @@ class ListarAtracoes(LoginRequiredMixin, PermissionRequiredMixin, View):
         }
         return render(request, 'tripAdvisor/list.html', context)
 
-class LocalDetailView(LoginRequiredMixin, PermissionRequiredMixin,DetailView):
-    login_url = reverse_lazy('login')
-    permission_required='tripAdvisor.view_local'
+class LocalDetailView( DetailView):
     model = Local
     template_name = 'tripAdvisor/detail.html' 
     context_object_name = 'atracao' 
 
     def get_queryset(self):
-        return super().get_queryset().select_related('endereco').prefetch_related('categoria')
+        return super().get_queryset().select_related('endereco').prefetch_related(
+            'categoria', 
+            'avaliacoes_recebidas__perfil'
+        )
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        atracao = self.object
         context['model_name'] = 'local'
+        context['avaliacao_form'] = AvaliacaoForm()
+        context['avaliacoes'] = atracao.avaliacoes_recebidas.all().order_by('-data_avaliacao')
+        context['atracao_pk'] = atracao.pk 
+        
         return context
 
-class AtividadeDetailView(LoginRequiredMixin, PermissionRequiredMixin,DetailView):
-    login_url = reverse_lazy('login')
-    permission_required='tripAdvisor.view_atividade'
+class AtividadeDetailView(DetailView):
     model = Atividade
     template_name = 'tripAdvisor/detail.html' 
     context_object_name = 'atracao'
+    
     def get_queryset(self):
-        return super().get_queryset().prefetch_related('categoria')
+        return super().get_queryset().prefetch_related(
+            'categoria',
+            'avaliacoes_recebidas__perfil' 
+        )
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        atracao = self.object 
         context['model_name'] = 'atividade'
+        context['avaliacao_form'] = AvaliacaoForm()
+        context['avaliacoes'] = atracao.avaliacoes_recebidas.all().order_by('-data_avaliacao')
+        context['atracao_pk'] = atracao.pk
+        
         return context
-    
 
 ###Views de create
     

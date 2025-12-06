@@ -40,6 +40,9 @@ urlpatterns = [
 
     path('delete/viagem/<int:pk>/', ViagemDeleteView.as_view(), name='delete_viagem'),
 
+    path('delete/avaliacao/<int:pk>', AvaliacaoDeleteView.as_view(), name='delete_avaliacao'),
+
+    path('update/avaliacao/<int:pk>', AvaliacaoUpdateView.as_view(), name='update_avaliacao'),
     
-    
+    path('datail/avaliacao/<int:pk>', AvaliacaoDetailView.as_view(), name='detail_avaliacao')
 ]

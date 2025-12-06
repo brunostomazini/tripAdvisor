@@ -5,3 +5,4 @@ from .local_form import *
 from .atividade_form import *
 from .form_endereco import *
 from .viagem_form import *
+from .avaliacao_form import *

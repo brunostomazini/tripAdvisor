@@ -1,58 +1,59 @@
-{% extends 'base.html' %}
+{% extends 'minimal.html' %}
 
 {% block title %}
 
 <!-- Título Dinâmico: Altera entre "Criar" e "Editar" -->
 
-<h1>{% if object %}Editar Viagem: {{ object.titulo }}{% else %}Criar Nova Viagem{% endif %}</h1>
+<h1>
+{% if object %}
+Editar Avaliação: {{ object.titulo }}
+{% else %}
+Criar Nova Avaliação
+{% endif %}
+</h1>
 {% endblock title %}
 
-{% block content %}
+{% block main %}
 
 <!--
 Ação Dinâmica:
 
-Se 'object' existir (UpdateView), usa a URL de edição com o PK da viagem.
-
-Se 'object' não existir (CreateView), usa a URL de adição.
+Se 'object' existir (UpdateView), usa a URL de edição com o PK da avaliação.
+Se 'object' não existir (CreateView), usaria a URL de adição (embora esta View seja apenas para Update).
 -->
 
-<form id="viagemForm" action="{% if object %}{% url 'tripAdvisor:update_viagem' pk=object.pk %}{% else %}{% url 'tripAdvisor:create_viagem' %}{% endif %}" method="post" class="p-4 rounded shadow-sm">
+<form id="avaliacaoForm"
+action="{% if object %}{% url 'tripAdvisor:update_avaliacao' pk=object.pk %}{% else %}{% url 'tripAdvisor:create_avaliacao' %}{% endif %}"
+method="post"
+class="p-4 rounded shadow-sm bg-body-tertiary">
 {% csrf_token %}
-
-<!--
-Os campos agora vêm com as classes Bootstrap (form-control e is-invalid)
-graças à definição de 'widgets' no seu ViagemForm.
--->
 
 <div class="row g-3">
 {% for field in form %}
 <div class="col-12
-{% if field.field.widget.input_type == 'date' or field.field.widget.input_type == 'number' %}col-md-6{% endif %}
-{% if field.name == 'descricao' or field.name == 'notas' or field.name == 'atracoes' %}col-12{% endif %}
+{% if field.field.widget.input_type == 'number' %}col-md-4{% endif %}
+{% if field.name == 'texto' %}col-12{% endif %}
 ">
 <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
 
-<!-- O widget do campo já está correto. -->
-{{ field }}
+    <!-- O widget do campo já está correto. -->
+    {{ field }}
 
-<!-- Exibição de Erros -->
-{% if field.errors %}
-    <div class="text-danger small mt-1">
-        {% for error in field.errors %}
-            {{ error }}
-        {% endfor %}
-    </div>
-{% endif %}
+    <!-- Exibição de Erros -->
+    {% if field.errors %}
+        <div class="text-danger small mt-1">
+            {% for error in field.errors %}
+                {{ error }}
+            {% endfor %}
+        </div>
+    {% endif %}
 
-<!-- Texto de Ajuda Opcional -->
-{% if field.help_text %}
-    <div class="form-text">{{ field.help_text }}</div>
-{% endif %}
-
+    <!-- Texto de Ajuda Opcional -->
+    {% if field.help_text %}
+        <div class="form-text">{{ field.help_text }}</div>
+    {% endif %}
 
 </div>
-
 {% endfor %}
 
 <!-- Erros de Formulário Não-Campo (Non-field errors) -->
@@ -60,9 +61,9 @@ graças à definição de 'widgets' no seu ViagemForm.
 {% if form.non_field_errors %}
 
 <div class="alert alert-danger mt-3" role="alert">
-{% for error in form.non_field_errors %}
-<p class="mb-0">{{ error }}</p>
-{% endfor %}
+    {% for error in form.non_field_errors %}
+    <p class="mb-0">{{ error }}</p>
+    {% endfor %}
 </div>
 {% endif %}
 
@@ -76,17 +77,26 @@ graças à definição de 'widgets' no seu ViagemForm.
 </button>
 
 <button type="reset" class="btn btn-warning btn-lg">
-<i class="bi bi-arrow-clockwise"></i> Limpar
+    <i class="bi bi-arrow-clockwise"></i> Limpar
 </button>
 
-<!-- Botão Voltar -->
+<!-- Botão Voltar (Volta para o Perfil em ambos os casos, usando a URL 'profile') -->
+
+{% if object %}
+<a class="btn btn-outline-secondary btn-lg" role="button" href="{% url 'profile' %}">
+    <i class="bi bi-arrow-left"></i> Voltar
+</a>
+{% else %}
+
+<!-- Se estiver em CreateView, pode voltar para a lista de viagens ou perfil -->
 
 <a class="btn btn-outline-secondary btn-lg" role="button" href="{% url 'profile' %}">
-<i class="bi bi-arrow-left"></i> Voltar
+    <i class="bi bi-arrow-left"></i> Voltar para o Perfil
 </a>
+{% endif %}
 
 </div>
 
 </form>
 
-{% endblock content %}
+{% endblock main %}

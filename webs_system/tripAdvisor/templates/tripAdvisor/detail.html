@@ -1,149 +1,279 @@
-{% extends 'minimal.html' %}
+{% extends "minimal.html"%}
+
+{% block extra_head %}
+<!-- Se o seu template minimal.html tiver um bloco "extra_head", você pode injetar estilos ou scripts aqui. -->
+<style>
+    /* Exemplo: Injetar CSS específico para a página de detalhes, se necessário. */
+    /* Isso sobrescreve estilos definidos no arquivo principal. */
+    .card-body {
+        padding-bottom: 2.5rem; /* Aumenta o padding inferior */
+    }
+    
+    /* Nota: Usamos cores escuras, então garantir que o fundo do corpo seja escuro */
+    body {
+        /* Garante que o fundo seja preto, se o minimal.html definir outra coisa */
+        background-color: #000000; 
+    }
+</style>
+{% endblock extra_head %}
+
+{% block menu %}
+<!-- ... (O conteúdo do menu vai aqui, assumindo que usa minimal.html) -->
+{% endblock menu %}
 
 {% block title %}
-<h1>Detalhes da Atração: {{ atracao.nome }}</h1>
+<h1 class="display-5 text-warning fw-bold mt-4">Detalhes da Atração</h1>
 {% endblock title %}
 
+{% block left %}
+<!-- NOVIDADE: Adicionando 'd-none' para tentar forçar o colapso da coluna reservada, 
+     assumindo que o minimal.html não remove a classe col-lg-3 quando o bloco está vazio. -->
+<div class="d-none"></div>
+{% endblock left %}
+
+{% block right %}
+<!-- NOVIDADE: Adicionando 'd-none' para tentar forçar o colapso da coluna reservada. -->
+<div class="d-none"></div>
+{% endblock right %}
+
+
 {% block main %}
-<div class="card border-primary-subtle shadow rounded-3 mb-4">
-    <div class="card-header text-primary-emphasis bg-primary-subtle border border-primary-subtle rounded-3 mb-3 text-center">
-        <h3 class="mb-0">{{ atracao.nome }}</h3>
-        <!-- CORRIGIDO: Substituindo atracao._meta.model_name (proibido) pela variável de contexto 'model_name' -->
-        <p class="mb-0 text-muted">Detalhes de um objeto tipo: <span class="badge bg-secondary">{{ model_name|capfirst }}</span></p>
+<!-- NOVIDADE: Botão Voltar para melhorar a navegação -->
+<a href="javascript:history.back()" class="btn btn-outline-secondary mb-4">
+    <i class="bi bi-arrow-left me-1"></i> Voltar à Lista
+</a>
+
+<div class="card bg-dark text-light border-secondary shadow-lg mb-5">
+    <div class="card-header bg-secondary">
+        <!-- CORREÇÃO: Usamos apenas atracao.nome, pois 'titulo' não existe em Local/Atividade -->
+        <h2 class="h4 mb-0">{{ atracao.nome }} <span class="badge bg-warning text-dark">{{ model_name|capfirst }}</span></h2>
     </div>
-    <div class="card-body text-start">
-
-        <!-- DETALHES GERAIS -->
-        <h5 class="card-title text-primary mb-3"><i class="bi bi-info-circle-fill"></i> Detalhes Gerais da Atração</h5>
+    
+    <div class="card-body">
         
-        <dl class="row">
-            <!-- Nota -->
-            <dt class="col-sm-3">Avaliação (Nota):</dt>
-            <dd class="col-sm-9">
-                <span class="badge bg-warning text-dark me-2">{{ atracao.nota|floatformat:1 }} / 5.0</span>
-            </dd>
-
-            <!-- Ingresso -->
-            <dt class="col-sm-3">Requer Ingresso:</dt>
-            <dd class="col-sm-9">
-                {% if atracao.ingresso %}
-                    <span class="badge bg-success">Sim</span>
+        <!-- SEÇÃO DE FOTO E NOTA GERAL -->
+        <div class="row mb-4">
+            <div class="col-md-5">
+                <!-- Placeholder ou campo de imagem -->
+                {% if atracao.foto %}
+                    <img src="{{ atracao.foto.url }}" class="img-fluid rounded shadow-lg" alt="Foto de {{ atracao.nome }}">
                 {% else %}
-                    <span class="badge bg-danger">Não</span>
+                    <!-- Imagem de placeholder simples -->
+                    <div class="bg-dark p-5 rounded shadow-lg text-center border border-warning" style="height: 250px;">
+                        <i class="bi bi-image display-4 text-secondary"></i>
+                        <p class="text-muted mt-2">Nenhuma imagem carregada.</p>
+                    </div>
                 {% endif %}
-            </dd>
+            </div>
 
-            <!-- Valor (Preço) -->
-            <dt class="col-sm-3">Valor Estimado:</dt>
-            <dd class="col-sm-9">
-                {% if atracao.valor %}
-                    R$ {{ atracao.valor|floatformat:2 }}
-                {% else %}
-                    <span class="text-muted">(Não informado / Gratuito)</span>
-                {% endif %}
-            </dd>
+            <div class="col-md-7 d-flex flex-column justify-content-between">
+                <div>
+                    <!-- DESCRIÇÃO -->
+                    <p class="card-text mb-4">{{ atracao.descricao|default:"Nenhuma descrição detalhada disponível." }}</p>
 
-            <!-- Telefone -->
-            <dt class="col-sm-3">Telefone:</dt>
-            <dd class="col-sm-9">
-                {% if atracao.telefone %}
-                    {{ atracao.telefone }}
-                {% else %}
-                    <span class="text-muted">(Não informado)</span>
-                {% endif %}
-            </dd>
-
-            <!-- Site -->
-            <dt class="col-sm-3">Site:</dt>
-            <dd class="col-sm-9">
-                {% if atracao.site %}
-                    <a href="{{ atracao.site }}" target="_blank" rel="noopener noreferrer" class="link-primary">{{ atracao.site }} <i class="bi bi-box-arrow-up-right"></i></a>
-                {% else %}
-                    <span class="text-muted">(Não disponível)</span>
-                {% endif %}
-            </dd>
-        </dl>
-
-        <hr>
-
-        <!-- INFORMACOES (Descrição em texto longo) -->
-        <h5 class="card-title text-primary"><i class="bi bi-card-text"></i> Descrição/Informações Detalhadas</h5>
-        <p class="card-text">{{ atracao.informacoes|default:"Nenhuma descrição detalhada fornecida." }}</p>
-        <hr>
+                    <!-- NOTA GERAL (Assumindo que 'media_notas' é passado no contexto) -->
+                    <h4 class="text-warning mt-3">
+                        Média de Avaliações: 
+                        {% if media_notas %}
+                            <span class="badge bg-warning text-dark fs-5">{{ media_notas|floatformat:1 }} / 10</span>
+                            <small class="text-light">({{ avaliacoes|length }} avaliações)</small>
+                        {% else %}
+                            <span class="badge bg-secondary text-light fs-5">Sem Nota</span>
+                        {% endif %}
+                    </h4>
+                </div>
+            </div>
+        </div>
         
-        <!-- CATEGORIA (Singular) -->
-        <h5 class="card-title text-primary"><i class="bi bi-tags-fill"></i> Categoria</h5>
-        <div class="d-flex flex-wrap gap-2 mb-4">
-            {% if atracao.categoria %}
-            <dl class="row w-100">
-                <!-- Nome e Classificação da Categoria -->
-                <dt class="col-sm-3">Nome:</dt>
-                <dd class="col-sm-9">
-                    <span class="badge rounded-pill bg-success-subtle text-success-emphasis py-2 px-3">
-                        {{ atracao.categoria.nome }} ({{ atracao.categoria.get_classificacao_display }})
-                    </span>
-                </dd>
-                
-                <!-- Descrição da Categoria -->
-                <dt class="col-sm-3">Descrição:</dt>
-                <dd class="col-sm-9">
-                    <p class="text-muted mb-0">{{ atracao.categoria.descricao }}</p>
-                </dd>
-            </dl>
-            {% else %}
-                <p class="text-muted">Nenhuma categoria associada.</p>
+        <hr class="border-secondary">
+        
+        <!-- INFORMAÇÕES DETALHADAS -->
+        <h5 class="mt-4 text-info">Informações de Contato e Operação:</h5>
+        <div class="row">
+            <div class="col-md-6">
+                <!-- ENDEREÇO E CONTATO -->
+                <ul class="list-unstyled">
+                    <li class="mb-2"><i class="bi bi-geo-alt me-2 text-warning"></i> 
+                        Endereço: 
+                        {% if atracao.endereco %}
+                            {{ atracao.endereco.rua }}, {{ atracao.endereco.cidade }} - {{ atracao.endereco.pais }}
+                        {% else %}
+                            <span class="text-muted">Não informado</span>
+                        {% endif %}
+                    </li>
+                    <li class="mb-2"><i class="bi bi-phone me-2 text-warning"></i> 
+                        Telefone: 
+                        {% if atracao.telefone %}
+                            <a href="tel:{{ atracao.telefone }}" class="text-light">{{ atracao.telefone }}</a>
+                        {% else %}
+                            <span class="text-muted">Não informado</span>
+                        {% endif %}
+                    </li>
+                    <li class="mb-2"><i class="bi bi-globe me-2 text-warning"></i> 
+                        Site: 
+                        {% if atracao.site %}
+                            <a href="{{ atracao.site }}" target="_blank" class="text-light">{{ atracao.site }}</a>
+                        {% else %}
+                            <span class="text-muted">Não informado</span>
+                        {% endif %}
+                    </li>
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <!-- HORÁRIO E CATEGORIAS -->
+                <ul class="list-unstyled">
+                    <li class="mb-2"><i class="bi bi-clock me-2 text-warning"></i> 
+                        Horário de Funcionamento: 
+                        {% if atracao.horario_funcionamento %}
+                            {{ atracao.horario_funcionamento }}
+                        {% else %}
+                            <span class="text-muted">Não informado</span>
+                        {% endif %}
+                    </li>
+                    <li class="mb-2"><i class="bi bi-tag me-2 text-warning"></i> Tipo: {{ atracao.tipo|default:"Não especificado" }}</li>
+                    <li class="mb-2"><i class="bi bi-bookmark me-2 text-warning"></i> 
+                        Categorias: 
+                        {% if atracao.categoria.all %}
+                            {% for cat in atracao.categoria.all %}
+                                <span class="badge bg-dark border border-info text-info">{{ cat.nome }}</span>
+                            {% endfor %}
+                        {% else %}
+                             <span class="text-muted">Nenhuma</span>
+                        {% endif %}
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top border-secondary">
+            {% if perms.tripAdvisor.change_local or perms.tripAdvisor.change_atividade %}
+                <!-- Use 'tripAdvisor:'|add:model_name|add:'_update' se esse for o seu padrão de nomeação de URL -->
+                <a href="{% url 'tripAdvisor:'|add:model_name|add:'_update' pk=atracao.pk %}" class="btn btn-warning btn-sm">
+                    <i class="bi bi-pencil-square"></i> Editar
+                </a>
+            {% endif %}
+            {% if perms.tripAdvisor.delete_local or perms.tripAdvisor.delete_atividade %}
+                <!-- Use 'tripAdvisor:'|add:model_name|add:'_delete' se esse for o seu padrão de nomeação de URL -->
+                <a href="{% url 'tripAdvisor:'|add:model_name|add:'_delete' pk=atracao.pk %}" class="btn btn-danger btn-sm">
+                    <i class="bi bi-trash"></i> Excluir
+                </a>
             {% endif %}
         </div>
-        <hr>
-
-        <!-- DETALHES ESPECÍFICOS (Endereço, apenas para Local) -->
-        {% if atracao.endereco %}
-            <div class="mb-4">
-                <h5 class="card-title text-primary"><i class="bi bi-geo-alt-fill"></i> Endereço Físico</h5>
-                <dl class="row">
-                    <dt class="col-sm-3">Logradouro:</dt>
-                    <dd class="col-sm-9">{{ atracao.endereco.logradouro }}, {{ atracao.endereco.numero }}</dd>
-                    
-                    <dt class="col-sm-3">Complemento:</dt>
-                    <dd class="col-sm-9">
-                        {% if atracao.endereco.complemento %}
-                            {{ atracao.endereco.complemento }}
-                        {% else %}
-                            <span class="text-muted">(Não informado)</span>
-                        {% endif %}
-                    </dd>
-
-                    <dt class="col-sm-3">Bairro / Cidade:</dt>
-                    <dd class="col-sm-9">{{ atracao.endereco.bairro }} / {{ atracao.endereco.cidade }} ({{ atracao.endereco.estado }})</dd>
-                    
-                    <dt class="col-sm-3">País / CEP:</dt>
-                    <dd class="col-sm-9">{{ atracao.endereco.pais }} (CEP: {{ atracao.endereco.cep }})</dd>
-                </dl>
-            </div>
-            <hr>
-        {% endif %}
-        
-        <!-- DETALHES ESPECÍFICOS (Exemplo para Atividade - Apenas para Subclasses) -->
-        {% if atracao.duracao_horas %}
-             <div class="mb-4">
-                <h5 class="card-title text-primary"><i class="bi bi-clock-fill"></i> Detalhes da Atividade (Subclasse)</h5>
-                <dl class="row">
-                    <dt class="col-sm-3">Duração:</dt>
-                    <dd class="col-sm-9">{{ atracao.duracao_horas }} horas</dd>
-                    
-                    <dt class="col-sm-3">Preço Médio:</dt>
-                    <dd class="col-sm-9">R$ {{ atracao.preco_medio|floatformat:2 }}</dd>
-                </dl>
-            </div>
-            <hr>
-        {% endif %}
-
     </div>
-    <div class="card-footer text-center">
-        <!-- Manter o link para a lista de atrações (se o URL estiver definido) -->
-        <a href="{% url 'tripAdvisor:listar_atracoes' %}" class="btn btn-outline-secondary">
-            <i class="bi bi-arrow-left"></i> Voltar para a Lista
-        </a>
+</div>
+
+<!-- SEÇÃO DE AVALIAÇÕES -->
+<div class="mt-5">
+    <h3 class="text-light border-bottom border-secondary pb-2 mb-4">Avaliações ({{ avaliacoes|length }})</h3>
+
+    <!-- Formulário de Nova Avaliação -->
+    <div class="card bg-dark border-info mb-4 shadow-sm">
+        <div class="card-header bg-info text-dark fw-bold">
+            Adicionar sua Avaliação
+        </div>
+        <div class="card-body">
+            {% if user.is_authenticated %}
+                {% if atracao_pk %}
+                    <!-- CORRIGIDO: Ação do formulário aponta para AvaliacaoCreateView, passando a PK da atração. -->
+                    <form method="post" action="">
+                        {% csrf_token %}
+                        
+                        <!-- Título e Texto (usando widgets com form-control definidos no forms.py) -->
+                        <div class="mb-3">
+                            {{ avaliacao_form.titulo.label_tag }}
+                            {{ avaliacao_form.titulo }}
+                            {% if avaliacao_form.titulo.errors %}<div class="text-danger">{{ avaliacao_form.titulo.errors }}</div>{% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ avaliacao_form.texto.label_tag }}
+                            {{ avaliacao_form.texto }}
+                            {% if avaliacao_form.texto.errors %}<div class="text-danger">{{ avaliacao_form.texto.errors }}</div>{% endif %}
+                        </div>
+
+                        <!-- Data da Visita -->
+                        <div class="mb-3">
+                            {{ avaliacao_form.data_visita.label_tag }}
+                            {{ avaliacao_form.data_visita }}
+                            {% if avaliacao_form.data_visita.errors %}<div class="text-danger">{{ avaliacao_form.data_visita.errors }}</div>{% endif %}
+                        </div>
+
+                        <!-- Nota (Radio Buttons) -->
+                        <div class="mb-3">
+                            <label class="form-label">{{ avaliacao_form.nota.label }}</label>
+                            <div class="d-flex gap-3 flex-wrap">
+                                {% for choice in avaliacao_form.nota %}
+                                    <div class="form-check form-check-inline">
+                                        {{ choice.tag }}
+                                        <label class="form-check-label" for="{{ choice.id_for_label }}">
+                                            {{ choice.choice_label }} 
+                                            <!-- Estrela para visualização da nota -->
+                                            <i class="bi bi-star-fill text-warning"></i>
+                                        </label>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            {% if avaliacao_form.nota.errors %}<div class="text-danger">{{ avaliacao_form.nota.errors }}</div>{% endif %}
+                        </div>
+                        
+                        <button type="submit" class="btn btn-info mt-2"><i class="bi bi-send-fill me-1"></i> Enviar Avaliação</button>
+                    </form>
+                {% else %}
+                    <div class="alert alert-danger">Erro: ID da atração não está disponível no contexto.</div>
+                {% endif %}
+            {% else %}
+                <div class="alert alert-warning text-center">
+                    <i class="bi bi-lock-fill me-2"></i> Você precisa <a href="{% url 'login' %}?next={{ request.path }}" class="alert-link">fazer login</a> para deixar uma avaliação.
+                </div>
+            {% endif %}
+        </div>
     </div>
+
+    <!-- Exibição das Avaliações Existentes -->
+    {% if avaliacoes %}
+        {% for avaliacao in avaliacoes %}
+            <div class="card bg-secondary text-light mb-3 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div>
+                            <h5 class="card-title text-warning fw-bold mb-1">{{ avaliacao.titulo }}</h5>
+                            <h6 class="card-subtitle mb-2">
+                                <!-- Loop para exibir estrelas baseadas na nota (0-10) -->
+                                {% for i in "1234567890"|make_list %}
+                                    {% if forloop.counter <= avaliacao.nota %}
+                                        <i class="bi bi-star-fill text-warning"></i>
+                                    {% else %}
+                                        <i class="bi bi-star text-warning"></i>
+                                    {% endif %}
+                                {% endfor %}
+                                (Nota: {{ avaliacao.nota }}/10)
+                            </h6>
+                        </div>
+                        <small class="text-light text-end">
+                            Por: 
+                            <!-- NOVIDADE: Adicionando link ao perfil, assumindo 'perfil_detail' existe -->
+                            <a href="" class="text-warning fw-bold text-decoration-none">
+                                {{ avaliacao.perfil.nome|default:avaliacao.perfil.user.username }}
+                            </a>
+                            <br>
+                            Em: {{ avaliacao.data_avaliacao|date:"d/m/Y" }}
+                        </small>
+                    </div>
+                    <p class="card-text">{{ avaliacao.texto }}</p>
+                    <small class="text-muted">Data da Visita: {{ avaliacao.data_visita|date:"d/m/Y" }}</small>
+                </div>
+                <div class="card-footer d-flex justify-content-end bg-dark border-secondary">
+                    <span class="text-info me-3"><i class="bi bi-hand-thumbs-up-fill me-1"></i> {{ avaliacao.likes }} Likes</span>
+                    <!-- Botão de Like (Funcionalidade futura) -->
+                    <button class="btn btn-sm btn-outline-info disabled" title="Em desenvolvimento">Curtir</button>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="alert alert-light text-center">
+            Nenhuma avaliação ainda. Seja o primeiro a avaliar!
+        </div>
+    {% endif %}
+
 </div>
 {% endblock main %}

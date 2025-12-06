@@ -22,34 +22,34 @@
 Opções
 </a>
 
-        <ul class="dropdown-menu">
-          <li><a class="dropdown-item" href="{% url 'tripAdvisor:listar_atracoes' %}">Atrações</a></li>
-        </ul>
-       
-      </li>
-      {% endif %}
-    </ul>
-    {% if user.is_authenticated %}
-      <span class="navbar-text text-dark px-2">
-        <a class="nav-link" href="{% url 'profile' %}">
-          <i class="bi bi-person-fill"></i> {{ user.first_name }}
-        </a></span>
-        <div class="me-2"></div>
-      <form action="{% url 'logout' %}" method="post">
-      {% csrf_token %}
-        <button class="btn btn-outline-danger btn" role="button" type="submit"><i class="bi bi-box-arrow-in-left"></i> Sair</button></form>
-     
-      {% else %}
-       <a class="btn btn-outline-primary btn" role="button" href="{% url 'login' %}" ><i class="bi bi-box-arrow-in-right"></i> Entrar</a>
-      {% endif %}
+        <ul class="dropdown-menu">
+          <li><a class="dropdown-item" href="{% url 'tripAdvisor:listar_atracoes' %}">Atrações</a></li>
+        </ul>
+       
+      </li>
+      {% endif %}
+    </ul>
+    {% if user.is_authenticated %}
+      <span class="navbar-text text-dark px-2">
+        <a class="nav-link" href="{% url 'profile' %}">
+          <i class="bi bi-person-fill"></i> {{ user.first_name }}
+        </a></span>
+        <div class="me-2"></div>
+      <form action="{% url 'logout' %}" method="post">
+      {% csrf_token %}
+        <button class="btn btn-outline-danger btn" role="button" type="submit"><i class="bi bi-box-arrow-in-left"></i> Sair</button></form>
+     
+      {% else %}
+       <a class="btn btn-outline-primary btn" role="button" href="{% url 'login' %}" ><i class="bi bi-box-arrow-in-right"></i> Entrar</a>
+      {% endif %}
 
 <!-- ALTERAÇÃO: Configura o formulário de pesquisa para enviar o query 'q' -->
 
-    <form class="d-flex" role="search" method="GET" action="{% url 'search' %}">
-      <input class="form-control me-2" type="search" placeholder="Buscar local/atividade" aria-label="Search" name="q" value="{{ search_query|default:'' }}"/>
-      <button class="btn btn-outline-success" type="submit">Buscar</button>
-    </form>
-  </div>
+    <form class="d-flex" role="search" method="GET" action="{% url 'search' %}">
+      <input class="form-control me-2" type="search" placeholder="Buscar local/atividade" aria-label="Search" name="q" value="{{ search_query|default:'' }}"/>
+      <button class="btn btn-outline-success" type="submit">Buscar</button>
+    </form>
+  </div>
 
 </div>
 </nav>
@@ -61,36 +61,34 @@ Opções
 
 <h3 class="text-center mb-4">Resultados da busca por: "<span class="text-primary">{{ search_query }}</span>"</h3>
 {% else %}
-<h2 class="text-center mb-4">Listagem Combinada (Locais e Atividades)</h2>
+<h2 class="text-center mb-4">Atrações sugerida</h2>
 {% endif %}
 
 {% if atracoes %}
-  <div class="text-center mb-4">
-   
-    {% if perms.tripAdvisor.add_atracao %}
-      <a class="btn btn-outline-success btn-lg"
-        data-bs-toggle="tooltip" data-bs-placement="top"
-        title="Adicionar nova atração"
-        href="{% url 'tripAdvisor:atracao_create' %}">
-        <i class="bi bi-plus-circle"></i> Adicionar Atração
-      </a>
-    {% endif %}
-  </div>
-    <table class ="table table-hover table-striped">
-      <thead>
-        <tr class="table-dark">
-          <th>ID</th>
-          <th>Nome / Título</th>
-          <th>Tipo</th>
-          <th>Opções</th>
-        </tr>
-      </thead>
-      <tbody>
-      {% for atracao in atracoes|slice:":5" %}
-        <!-- Assumindo que você adicionou o método get_model_name() em ambos os modelos. -->
-        {% with model_name=atracao.get_model_name %}
-        <tr>
-          <td>{{ atracao.id }}</td>
+  <div class="text-center mb-4">
+   
+    {% if perms.tripAdvisor.add_atracao %}
+      <a class="btn btn-outline-success btn-lg"
+        data-bs-toggle="tooltip" data-bs-placement="top"
+        title="Adicionar nova atração"
+        href="{% url 'tripAdvisor:atracao_create' %}">
+        <i class="bi bi-plus-circle"></i> Adicionar Atração
+      </a>
+    {% endif %}
+  </div>
+    <table class ="table table-hover table-striped">
+      <thead>
+        <tr class="table-dark">
+          <th>Nome / Título</th>
+          <th>Tipo</th>
+          <th>Opções</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for atracao in atracoes|slice:":5" %}
+        <!-- Assumindo que você adicionou o método get_model_name() em ambos os modelos. -->
+        {% with model_name=atracao.get_model_name %}
+        <tr>
 
 <td>
 {% if atracao.nome %}
@@ -99,7 +97,7 @@ Opções
 {{ atracao.titulo }}
 {% endif %}
 </td>
-          <td>
+          <td>
 <span class="badge bg-secondary">
 {% if atracao.cidade_nome %}
 Local ({{ atracao.cidade_nome }})
@@ -110,42 +108,20 @@ N/A
 {% endif %}
 </span>
 </td>
-          <td>
-            <div class="d-flex gap-2">
-             
-              {% if perms.tripAdvisor.view_atracao %}
-                <!-- URL dinâmico: tripAdvisor:local_detail ou tripAdvisor:atividade_detail -->
-                <a class="btn btn-sm btn-outline-secondary" role="button"
-                    data-bs-toggle="tooltip" data-bs-placement="top" title="Detalhar {{ model_name|capfirst }}"
-                    href="{% url 'tripAdvisor:'|add:model_name|add:'_detail' pk=atracao.pk %}">
-                  <i class="bi bi-eye"></i></a>
-              {% endif %}
-             
-              {% if perms.tripAdvisor.change_atracao %}
-                <a class="btn btn-sm btn-outline-secondary" role="button"
-                    data-bs-toggle="tooltip" data-bs-placement="top" title="Atualizar {{ model_name|capfirst }}"
-                   
-                    href="{% url 'tripAdvisor:'|add:model_name|add:'_update' pk=atracao.pk %}">
-                      <i class="bi bi-pencil-square"></i></a>
-              {% endif %}
-
-              {% if perms.tripAdvisor.delete_atracao %}
-                <a class="btn btn-sm btn-outline-secondary"
-                  role="button"
-                  data-bs-toggle="tooltip"
-                  data-bs-placement="top"
-                  title="Deletar {{ model_name|capfirst }}"
-                  href="{% url 'tripAdvisor:'|add:model_name|add:'_delete' pk=atracao.pk %}">
-                  <i class="bi bi-trash"></i>
-                </a>
-              {% endif %}
-            </div>
-          </td>
-        </tr>
-        {% endwith %}
-      {% endfor %}
-      </tbody>
-    </table>
+          <td>
+            <div class="d-flex gap-2">
+                <!-- URL dinâmico: tripAdvisor:local_detail ou tripAdvisor:atividade_detail -->
+                <a class="btn btn-sm btn-outline-secondary" role="button"
+                    data-bs-toggle="tooltip" data-bs-placement="top" title="Detalhar {{ model_name|capfirst }}"
+                    href="{% url 'tripAdvisor:'|add:model_name|add:'_detail' pk=atracao.pk %}">
+                  <i class="bi bi-eye"></i></a>
+            </div>
+          </td>
+        </tr>
+        {% endwith %}
+      {% endfor %}
+      </tbody>
+    </table>
 
 {% if atracoes|length > 5 %}
 

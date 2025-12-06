@@ -154,7 +154,7 @@
               {% if perms.tripAdvisor.view_avaliacao %}
                 <a class="btn btn-outline-secondary btn-sm" role="button"
                     data-bs-toggle="tooltip" data-bs-placement="top" title="Detalhar Viagem"
-                    href="">
+                    href="{% url 'tripAdvisor:detail_avaliacao' avaliacao.id %}">
                   <i class="bi bi-eye"></i></a>
               {% endif %}
              
@@ -162,7 +162,7 @@
                 <a class="btn btn-outline-secondary btn-sm" role="button"
                     data-bs-toggle="tooltip" data-bs-placement="top" title="Atualizar"
                    
-                    href="">
+                    href="{% url 'tripAdvisor:update_avaliacao' avaliacao.id %}">
                       <i class="bi bi-pencil-square"></i></a>
               {% endif %}
 
@@ -172,7 +172,7 @@
                   data-bs-toggle="tooltip"
                   data-bs-placement="top"
                   title="Deletar"
-                  href="">
+                  href="{% url 'tripAdvisor:delete_avaliacao' avaliacao.id %}">
                   <i class="bi bi-trash"></i>
                 </a>
               {% endif %}
