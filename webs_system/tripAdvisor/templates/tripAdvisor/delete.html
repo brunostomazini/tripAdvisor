@@ -1,10 +1,12 @@
 {% extends 'base.html' %}
 
 {% block title %}
-  <h1>Confirmação de Exclusão</h1>
+
+<h1>Confirmação de Exclusão</h1>
 {% endblock title %}
 
 {% block content %}
+
 <div class="row justify-content-center mt-5">
   <div class="col-md-8 col-lg-6">
     <div class="card shadow-lg border-danger">
@@ -12,33 +14,73 @@
         <h3 class="mb-0"><i class="bi bi-exclamation-triangle-fill"></i> Atenção! Ação Irreversível</h3>
       </div>
       <div class="card-body p-4">
-        
+       
+
+
+        {% if object.titulo %}
+{% with item_name=object.titulo item_type='viagem' cancel_url_name='profile' %}
+
         <p class="text-danger text-center lead mb-4">
-          Você está prestes a deletar a atração permanentemente.
+            Você está prestes a deletar esta {{ item_type }} permanentemente.
         </p>
         
-        <!-- O objeto 'object' é passado pela DeleteView -->
-        <h4 class="text-center mb-4">Tem certeza que deseja excluir: <br>
-          <strong class="text-dark">{{ object.nome }} (ID: {{ object.pk }})?</strong>
+        <!-- Exibição do item e ID -->
+        <h4 class="text-center mb-4">Tem certeza que deseja excluir:
+            <strong class="text-dark">{{ item_name }} (ID: {{ object.pk }})?</strong>
         </h4>
 
         <form method="post">
-          {% csrf_token %}
-          
-          <div class="d-grid gap-2">
-            <!-- Botão de Confirmação -->
-            <button type="submit" class="btn btn-danger btn-lg">
-              <i class="bi bi-trash"></i> Sim, Excluir Definitivamente
-            </button>
-            
-            <!-- Botão de Cancelamento (Volta para a lista principal) -->
-            <a href="{% url 'tripAdvisor:listar_atracoes' %}" class="btn btn-outline-secondary btn-lg">
-              Cancelar
-            </a>
-          </div>
+            {% csrf_token %}
+            <div class="d-grid gap-2">
+                <!-- Botão de Confirmação -->
+                <button type="submit" class="btn btn-danger btn-lg">
+                    <i class="bi bi-trash"></i> Sim, Excluir Definitivamente
+                </button>
+                <!-- Botão de Cancelamento: Usa a URL de cancelamento definida condicionalmente. -->
+                <a href="{% url cancel_url_name %}" class="btn btn-outline-secondary btn-lg">
+                    Cancelar
+                </a>
+            </div>
         </form>
+        
+        {% endwith %}
+
+
+        {% else %}
+
+        {% with item_name=object.nome item_type='atração' cancel_url_name='tripAdvisor:listar_atracoes' %}
+        
+        <p class="text-danger text-center lead mb-4">
+            Você está prestes a deletar esta {{ item_type }} permanentemente.
+        </p>
+        
+        <!-- Exibição do item e ID -->
+        <h4 class="text-center mb-4">Tem certeza que deseja excluir:
+            <strong class="text-dark">{{ item_name }} (ID: {{ object.pk }})?</strong>
+        </h4>
+        
+        <form method="post">
+            {% csrf_token %}
+            <div class="d-grid gap-2">
+                <!-- Botão de Confirmação -->
+                <button type="submit" class="btn btn-danger btn-lg">
+                    <i class="bi bi-trash"></i> Sim, Excluir Definitivamente
+                </button>
+                <!-- Botão de Cancelamento: Usa a URL de cancelamento definida condicionalmente. -->
+                <a href="{% url cancel_url_name %}" class="btn btn-outline-secondary btn-lg">
+                    Cancelar
+                </a>
+            </div>
+        </form>
+        
+        {% endwith %}
+
+
+        {% endif %}
+
       </div>
     </div>
   </div>
+
 </div>
 {% endblock content %}

@@ -1,0 +1,103 @@
+{% extends 'minimal.html' %}
+{% load static %}
+{# Adicionando o load static caso você use ícones ou CSS personalizados #}
+
+{% block title %}
+
+<h1>Detalhes da Viagem: {{ viagem.titulo }}</h1>
+{% endblock title %}
+
+{% block main %}
+
+<div class="card border-primary-subtle shadow rounded-3 mb-4">
+<div class="card-header text-primary-emphasis bg-primary-subtle border
+border-primary-subtle rounded-3 mb-3 text-center">
+<h3 class="mb-0">{{ viagem.titulo }}</h3>
+<p class="mb-0 text-muted">Detalhes da sua viagem para: <span class="badge bg-secondary">{{ viagem.pais_destino }}</span></p>
+</div>
+
+<div class="card-body text-start">
+
+<!-- INFORMAÇÕES CHAVE (DESTINO, DATAS, ORÇAMENTO) -->
+<h5 class="card-title text-primary mb-3"><i class="bi bi-calendar-check-fill"></i> Resumo da Viagem</h5>
+
+<dl class="row">
+    <!-- Destino -->
+    <dt class="col-sm-3">Destino:</dt>
+    <dd class="col-sm-9">
+        <span class="fw-bold">{{ viagem.destino }}</span>, {{ viagem.pais_destino }}
+    </dd>
+
+    <!-- Período -->
+    <dt class="col-sm-3">Período:</dt>
+    <dd class="col-sm-9">
+        {{ viagem.inicio|date:"d/m/Y" }} <i class="bi bi-arrow-right"></i> {{ viagem.final|date:"d/m/Y" }}
+    </dd>
+
+    <!-- Orçamento -->
+    <dt class="col-sm-3">Orçamento Total:</dt>
+    <dd class="col-sm-9">
+        <span class="badge bg-success-subtle text-success-emphasis py-1 px-2">
+            R$ {{ viagem.orcamento|floatformat:2 }}
+        </span>
+    </dd>
+</dl>
+
+<hr>
+
+<!-- DETALHES DO PLANEJAMENTO (PROPÓSITO, TRANSPORTE) -->
+<h5 class="card-title text-primary mb-3"><i class="bi bi-airplane-fill"></i> Detalhes do Planejamento</h5>
+
+<dl class="row">
+    <!-- Propósito -->
+    <dt class="col-sm-3">Propósito:</dt>
+    <dd class="col-sm-9">
+        <span class="badge bg-info text-dark">{{ viagem.get_proprosito_display }}</span>
+    </dd>
+
+    <!-- Transporte -->
+    <dt class="col-sm-3">Transporte Principal:</dt>
+    <dd class="col-sm-9">
+        <span class="badge bg-warning text-dark">{{ viagem.get_transporte_display }}</span>
+    </dd>
+
+    <!-- Descrição Longa -->
+    <dt class="col-sm-3">Descrição:</dt>
+    <dd class="col-sm-9">
+        <p class="card-text">{{ viagem.descricao|default:"Nenhuma descrição fornecida para a viagem." }}</p>
+    </dd>
+</dl>
+
+<hr>
+
+<!-- NOTAS E METADADOS -->
+<h5 class="card-title text-primary mb-3"><i class="bi bi-pencil-square"></i> Notas e Metadados</h5>
+
+<dl class="row">
+    <!-- Notas -->
+    <dt class="col-sm-3">Notas Adicionais:</dt>
+    <dd class="col-sm-9">
+        <p class="text-muted">{{ viagem.notas|default:"Sem notas adicionais." }}</p>
+    </dd>
+
+    <!-- Criado em -->
+    <dt class="col-sm-3">Criado em:</dt>
+    <dd class="col-sm-9">{{ viagem.created_at|date:"d/m/Y H:i" }}</dd>
+
+    <!-- Dono -->
+    <dt class="col-sm-3">Dono da Viagem:</dt>
+    <dd class="col-sm-9">{{ viagem.dono.usuario.username }}</dd>
+</dl>
+
+
+</div>
+
+<div class="card-footer text-center">
+
+<a href="{% url 'profile' %}" class="btn btn-outline-secondary me-2">
+<i class="bi bi-person-circle"></i> Voltar ao Meu Perfil
+</a>
+
+</div>
+</div>
+{% endblock main %}

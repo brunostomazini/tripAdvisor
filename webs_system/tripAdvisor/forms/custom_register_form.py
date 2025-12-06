@@ -62,3 +62,5 @@ class PerfilDataForm(forms.ModelForm):
             if age < 18:
                 raise forms.ValidationError("Usuário precisa ter 18 anos ou mais!")
         return data_nascimento
+    
+

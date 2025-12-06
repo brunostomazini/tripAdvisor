@@ -1,0 +1,25 @@
+<div class="d-flex justify-content-start gap-3 mb-4 align-items-center">
+<span class="text-muted fw-semibold">Ordenar por:</span>
+
+<!-- Ordenar por Data (assumimos que o campo no modelo é 'data') -->
+<a href="?order_by=data" class="btn btn-sm btn-outline-info rounded-pill">
+    <i class="bi bi-calendar"></i> Data
+</a>
+
+<!-- Ordenar por Orçamento (assumimos que o campo no modelo é 'orcamento') -->
+<a href="?order_by=orcamento" class="btn btn-sm btn-outline-success rounded-pill">
+    <i class="bi bi-currency-dollar"></i> Orçamento
+</a>
+
+<!-- Ordenar por Propósito (assumimos que o campo no modelo é 'proposito') -->
+<a href="?order_by=proposito" class="btn btn-sm btn-outline-primary rounded-pill">
+    <i class="bi bi-tags"></i> Propósito
+</a>
+
+<!-- Link para limpar a ordenação (retorna à URL base do perfil) -->
+<a href="{% url 'profile' %}" class="btn btn-sm btn-outline-secondary rounded-pill" title="Remover Ordenação">
+    <i class="bi bi-x-circle"></i> Limpar
+</a>
+
+
+</div>

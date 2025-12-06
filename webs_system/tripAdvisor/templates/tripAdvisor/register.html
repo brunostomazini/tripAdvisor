@@ -1,67 +1,51 @@
 {% extends 'base.html' %}
 
 {% block title %}
-<h1>Cadastro de Usuário</h1>
+
+<h1>{% if object %}Editar Perfil{% else %}Criar Perfil{% endif %}</h1>
 {% endblock title %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-8 col-lg-6">
-        <div class="card shadow p-5 mt-5">
-            <h2 class="text-center mb-4">Criar uma Nova Conta</h2>
-            
-            <form method="post">
+
+<div class="row justify-content-center mt-5">
+<div class="col-md-8 col-lg-6">
+<div class="card shadow-lg border-primary">
+<div class="card-header bg-primary text-white text-center">
+<h4 class="mb-0">Dados do Seu Perfil</h4>
+</div>
+<div class="card-body p-4">
+
+            <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
-        
-                {% if user_form.non_field_errors or perfil_form.non_field_errors %}
-                    <div class="alert alert-danger">
-                        {% for error in user_form.non_field_errors %}{{ error }}{% endfor %}
-                        {% for error in perfil_form.non_field_errors %}{{ error }}{% endfor %}
-                    </div>
-                {% endif %}
 
-                <!-- SECTION 1: USER ACCOUNT DATA (handled by UserRegistrationForm) -->
-                <h4 class="mt-4 mb-3 text-primary border-bottom pb-2">Dados de Acesso</h4>
-                {% for field in user_form %}
+                <!-- Renderiza campos do formulário (nome_completo, bio, etc.) -->
+                {% for field in form %}
                     <div class="mb-3">
                         <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
                         {{ field }}
-                        {% for error in field.errors %}
-                            <div class="invalid-feedback d-block">{{ error }}</div>
-                        {% endfor %}
                         {% if field.help_text %}
-                            <div class="form-text text-muted">{{ field.help_text|safe }}</div>
+                            <small class="text-muted">{{ field.help_text }}</small>
                         {% endif %}
-                    </div>
-                {% endfor %}
-
-                <!-- SECTION 2: PERFIL DATA (handled by PerfilDataForm) -->
-                <h4 class="mt-5 mb-3 text-primary border-bottom pb-2">Informações Pessoais</h4>
-                {% for field in perfil_form %}
-                    <div class="mb-3">
-                        <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
-                        {{ field }}
                         {% for error in field.errors %}
-                            <div class="invalid-feedback d-block">{{ error }}</div>
+                            <div class="text-danger">{{ error }}</div>
                         {% endfor %}
-                        {% if field.help_text %}
-                            <div class="form-text text-muted">{{ field.help_text|safe }}</div>
-                        {% endif %}
                     </div>
                 {% endfor %}
 
                 <div class="d-grid gap-2 mt-4">
-                    <button type="submit" class="btn btn-success btn-lg">
-                        <i class="bi bi-person-plus-fill"></i> Registrar e Entrar
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="bi bi-save"></i> Salvar Perfil
                     </button>
+                    <a href="{% url 'profile' %}" class="btn btn-outline-secondary">
+                        Cancelar
+                    </a>
                 </div>
             </form>
-            
-            <div class="mt-3 text-center">
-                <hr class="my-3">
-                <p>Já tem uma conta? <a href="{% url 'login' %}">Voltar para o Login</a></p>
-            </div>
+
         </div>
     </div>
 </div>
-{% endblock content %}
+
+
+</div>
+{% endblock %}

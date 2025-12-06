@@ -19,7 +19,8 @@ class Atividade(Atracao):
         verbose_name = "Atividade"
         verbose_name_plural = "Atividades"
         
-        
-    
     def __str__(self):
         return f"Atividade:{self.nome}"
+
+    def get_model_name(self):
+        return 'atividade'

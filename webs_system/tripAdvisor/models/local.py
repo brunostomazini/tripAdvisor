@@ -21,3 +21,5 @@ class Local(Atracao):
     def __str__(self):
         return f"Local:{self.nome}"
     
+    def get_model_name(self):
+        return 'local'

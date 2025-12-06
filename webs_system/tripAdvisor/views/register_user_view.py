@@ -2,10 +2,14 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login
 from django.db import transaction
 from django.views import View 
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.contrib.auth.models import Group
 from ..forms import UserRegistrationForm, PerfilDataForm 
 from ..models import Perfil
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.db.models import QuerySet
+from django.http import Http404
 
 
 class RegisterUserView(View):
@@ -64,3 +68,16 @@ class RegisterUserView(View):
             'title': 'Registro de Conta'
         }
         return render(request, self.template_name, context)
+    
+class PerfilUpdateView(LoginRequiredMixin, UpdateView):
+
+    model = Perfil
+    form_class = PerfilDataForm 
+    template_name = 'tripAdvisor/register.html' 
+    success_url = reverse_lazy('profile') 
+
+    def get_object(self, queryset=None):
+        try:
+            return self.request.user.perfil
+        except Perfil.DoesNotExist:
+            raise Http404("Perfil do usuário não encontrado. Por favor, crie seu perfil primeiro.")

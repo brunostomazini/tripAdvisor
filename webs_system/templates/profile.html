@@ -3,6 +3,7 @@
 {% block title %}<h1>Perfil do Usuário</h1>{% endblock title %}
 
 {% block left %}
+
 <div class="card border-primary-subtle shadow rounded-3">
   <div class="card-header text-primary-emphasis bg-primary-subtle border
   border-primary-subtle rounded-3 mb-3 text-white text-center">
@@ -33,8 +34,157 @@
     <!-- Ações -->
     <div class="mt-4 d-flex justify-content-center gap-3">
       <a href="{% url 'logout' %}" class="btn btn-outline-danger">Logout</a>
-      <a href="{% url 'password_change' %}" class="btn btn-outline-secondary">Alterar Senha</a>
+      <a href="{% url 'tripAdvisor:perfil_update' %}" class="btn btn-outline-secondary">Editar perfil</a>
     </div>
   </div>
+
 </div>
+{% endblock %}
+
+{% block content %}
+
+<!-- TÍTULO DA SEÇÃO DE VIAGENS -->
+
+<h2 class="text-primary border-bottom pb-2 mb-4"><i class="bi bi-geo-alt"></i> Minhas Viagens</h2>
+
+  {% if viagens %}
+  <p class="lead">Você já registrou <strong>{{ viagens|length }}</strong> viagens:</p>
+  <div class="text-center mb-4">
+   
+    {% if perms.tripAdvisor.add_viagem %}
+      <a class="btn btn-outline-success"
+        data-bs-toggle="tooltip" data-bs-placement="top"
+        title="Adicionar nova atração"
+        href="{% url 'tripAdvisor:create_viagem' %}">
+        <i class="bi bi-plus-circle"></i> Adicionar Viagem
+      </a>
+    {% endif %}
+  </div>
+
+<!-- INCLUI OS CONTROLES DE ORDENAÇÃO -->
+
+{% include 'viagem_sorting_controls.html' %}
+
+    <table class ="table table-hover">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nome</th>
+          <th>Descrição</th>
+          <th>Opções</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for viagem in viagens %}
+
+        {% with model_name=viagem.get_model_name %}
+        <tr>
+          <td>{{ viagem.id }}</td>
+         
+          <td>{{ viagem.titulo }}</td>
+          <td>{{ viagem.descricao|truncatechars:50 }}</td>
+          <td>
+            <div class="d-flex gap-1">
+             
+              {% if perms.tripAdvisor.view_viagem %}
+                <a class="btn btn-outline-secondary btn-sm" role="button"
+                    data-bs-toggle="tooltip" data-bs-placement="top" title="Detalhar Viagem"
+                    href="{% url 'tripAdvisor:detail_viagem' viagem.id %}">
+                  <i class="bi bi-eye"></i></a>
+              {% endif %}
+             
+              {% if perms.tripAdvisor.change_viagem %}
+                <a class="btn btn-outline-secondary btn-sm" role="button"
+                    data-bs-toggle="tooltip" data-bs-placement="top" title="Atualizar"
+                   
+                    href="{% url 'tripAdvisor:update_viagem' viagem.id %}">
+                      <i class="bi bi-pencil-square"></i></a>
+              {% endif %}
+
+              {% if perms.tripAdvisor.delete_viagem %}
+                <a class="btn btn-outline-secondary btn-sm"
+                  role="button"
+                  data-bs-toggle="tooltip"
+                  data-bs-placement="top"
+                  title="Deletar"
+                  href="{% url 'tripAdvisor:delete_viagem' viagem.id %}">
+                  <i class="bi bi-trash"></i>
+                </a>
+              {% endif %}
+            </div>
+          </td>
+        </tr>
+        {% endwith %}
+      {% endfor %}
+      </tbody>
+    </table>
+{% else %}
+
+<div class="alert alert-info" role="alert">Você ainda não registrou nenhuma viagem. Use o botão acima para começar!</div>
+{% endif %}
+
+<!-- TÍTULO DA SEÇÃO DE AVALIAÇÕES -->
+
+<h2 class="text-primary border-bottom pb-2 mb-4 mt-5"><i class="bi bi-star"></i> Minhas Avaliações</h2>
+
+    <!-- Avaliações -->
+{% if avaliacoes %}
+
+<p class="lead">Você tem <strong>{{ avaliacoes|length }}</strong> avaliações registradas:</p>
+    <table class ="table table-hover">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Titulo</th>
+          <th>Texto</th>
+          <th>Opções</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for avaliacao in avaliacoes %}
+
+       
+        <tr>
+          <td>{{ avaliacao.id }}</td>
+          <td>{{ avaliacao.titulo }}</td>
+          <td>{{ avaliacao.texto|truncatechars:50 }}</td>
+          <td>
+            <div class="d-flex gap-1">
+             
+              {% if perms.tripAdvisor.view_avaliacao %}
+                <a class="btn btn-outline-secondary btn-sm" role="button"
+                    data-bs-toggle="tooltip" data-bs-placement="top" title="Detalhar Viagem"
+                    href="">
+                  <i class="bi bi-eye"></i></a>
+              {% endif %}
+             
+              {% if perms.tripAdvisor.change_avaliacao %}
+                <a class="btn btn-outline-secondary btn-sm" role="button"
+                    data-bs-toggle="tooltip" data-bs-placement="top" title="Atualizar"
+                   
+                    href="">
+                      <i class="bi bi-pencil-square"></i></a>
+              {% endif %}
+
+              {% if perms.tripAdvisor.delete_avaliacao %}
+                <a class="btn btn-outline-secondary btn-sm"
+                  role="button"
+                  data-bs-toggle="tooltip"
+                  data-bs-placement="top"
+                  title="Deletar"
+                  href="">
+                  <i class="bi bi-trash"></i>
+                </a>
+              {% endif %}
+            </div>
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+{% else %}
+
+<div class="alert alert-info" role="alert">Você ainda não fez nenhuma avaliação.</div>
+{% endif %}
+
 {% endblock %}

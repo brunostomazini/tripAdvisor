@@ -31,14 +31,6 @@ class Atracao(BaseModel):
         verbose_name="Endereço Físico"
     )
 
-    viagens = models.ManyToManyField(
-        'Viagem', 
-        related_name='atracoes_incluidas',
-        verbose_name="Viagens Incluídas",
-        blank=True,
-        null=True
-    )
-
     class Meta:
         verbose_name = "Atração"
         verbose_name_plural = "Atrações"
