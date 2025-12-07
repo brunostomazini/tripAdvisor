@@ -13,7 +13,6 @@
 <li class="nav-item">
 <a class="nav-link active" aria-current="page" href="{% url 'index'%}">Home</a>
 </li>
-<!-- A tag </li> foi adicionada aqui para fechar o item Home -->
 
 {% if request.user.is_superuser %}
 
@@ -43,7 +42,7 @@ Opções
        <a class="btn btn-outline-primary btn" role="button" href="{% url 'login' %}" ><i class="bi bi-box-arrow-in-right"></i> Entrar</a>
       {% endif %}
 
-<!-- ALTERAÇÃO: Configura o formulário de pesquisa para enviar o query 'q' -->
+<!-- Configura o formulário de pesquisa para enviar o query 'q' -->
 
     <form class="d-flex" role="search" method="GET" action="{% url 'search' %}">
       <input class="form-control me-2" type="search" placeholder="Buscar local/atividade" aria-label="Search" name="q" value="{{ search_query|default:'' }}"/>
@@ -59,73 +58,88 @@ Opções
 
 {% if search_query %}
 
-<h3 class="text-center mb-4">Resultados da busca por: "<span class="text-primary">{{ search_query }}</span>"</h3>
+<h3 class="text-center mb-4 text-light">Resultados da busca por: "<span class="text-warning">{{ search_query }}</span>"</h3>
 {% else %}
-<h2 class="text-center mb-4">Atrações sugerida</h2>
+<h2 class="text-center mb-4 text-warning fw-bold">Atrações Sugeridas </h2>
+<p class="text-center text-light lead mb-5">Explore os locais e atividades mais populares da nossa comunidade.</p>
 {% endif %}
 
 {% if atracoes %}
-  <div class="text-center mb-4">
-   
-    {% if perms.tripAdvisor.add_atracao %}
-      <a class="btn btn-outline-success btn-lg"
-        data-bs-toggle="tooltip" data-bs-placement="top"
-        title="Adicionar nova atração"
-        href="{% url 'tripAdvisor:atracao_create' %}">
-        <i class="bi bi-plus-circle"></i> Adicionar Atração
-      </a>
-    {% endif %}
-  </div>
-    <table class ="table table-hover table-striped">
-      <thead>
-        <tr class="table-dark">
-          <th>Nome / Título</th>
-          <th>Tipo</th>
-          <th>Opções</th>
-        </tr>
-      </thead>
-      <tbody>
-      {% for atracao in atracoes|slice:":5" %}
-        <!-- Assumindo que você adicionou o método get_model_name() em ambos os modelos. -->
-        {% with model_name=atracao.get_model_name %}
-        <tr>
 
-<td>
-{% if atracao.nome %}
-{{ atracao.nome }}
-{% else %}
-{{ atracao.titulo }}
-{% endif %}
-</td>
-          <td>
-<span class="badge bg-secondary">
-{% if atracao.cidade_nome %}
-Local ({{ atracao.cidade_nome }})
-{% elif atracao.tipo %}
-Atividade ({{ atracao.tipo }})
-{% else %}
-N/A
-{% endif %}
-</span>
-</td>
-          <td>
-            <div class="d-flex gap-2">
-                <!-- URL dinâmico: tripAdvisor:local_detail ou tripAdvisor:atividade_detail -->
-                <a class="btn btn-sm btn-outline-secondary" role="button"
-                    data-bs-toggle="tooltip" data-bs-placement="top" title="Detalhar {{ model_name|capfirst }}"
-                    href="{% url 'tripAdvisor:'|add:model_name|add:'_detail' pk=atracao.pk %}">
-                  <i class="bi bi-eye"></i></a>
-            </div>
-          </td>
-        </tr>
-        {% endwith %}
-      {% endfor %}
-      </tbody>
-    </table>
+<!-- NOVO LAYOUT: GRID DE CARDS RESPONSIVO -->
+
+<!-- Define 1 coluna em telas pequenas (xs), 2 em médias (md) e 3 em grandes (lg) -->
+
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+{% for atracao in atracoes|slice:":5" %}
+{% with model_name=atracao.get_model_name %}
+<div class="col">
+<div class="card h-100 bg-dark text-light border-warning shadow-lg">
+
+<!-- Imagem Placeholder (Se você tiver a foto da atração, insira-a aqui) -->
+
+{% comment %}
+<img src="{% if atracao.foto %}{{ atracao.foto.url }}{% else %}https://placehold.co/600x400/171717/CCCCCC?text=Imagem+N%C3%A3o+Dispon%C3%ADvel{% endif %}" class="card-img-top" alt="Imagem da Atração" style="height: 200px; object-fit: cover;">
+{% endcomment %}
+
+<div class="card-body d-flex flex-column">
+<h5 class="card-title text-warning fw-bold mb-1">
+<!-- Exibe Nome (Local) ou Título (Atividade) -->
+{% if atracao.nome %}{{ atracao.nome }}{% else %}{{ atracao.titulo }}{% endif %}
+</h5>
+
+<!-- Tipo/Localização e Badge do Tipo de Modelo -->
+<p class="card-text mb-3">
+    <span class="badge bg-secondary me-1">
+        <i class="bi bi-geo-alt me-1"></i>
+        
+        <!-- LÓGICA ATUALIZADA: Diferencia a exibição com base no tipo de modelo -->
+        {% if model_name == 'local' %}
+            Local ({% if atracao.endereco %}{{ atracao.endereco.cidade }}{% else %}Sem cidade{% endif %})
+        {% elif model_name == 'atividade' %}
+            Atividade ({% if atracao.categoria %}{{ atracao.categoria.nome }}{% else %}Sem categoria{% endif %})
+        {% else %}
+            N/A
+        {% endif %}
+        
+    </span>
+    <!-- Badge que informa se é Local ou Atividade -->
+    <span class="badge bg-info text-dark fw-bold">{{ model_name|capfirst }}</span>
+</p>
+
+<!-- Descrição Curta (USANDO atracao.informacoes) -->
+<p class="card-text text-muted small flex-grow-1">
+    {% if atracao.informacoes %}
+        {{ atracao.informacoes|truncatechars:120 }}
+    {% else %}
+        Clique para ver mais detalhes e avaliações completas desta atração.
+    {% endif %}
+</p>
+
+<!-- Botão de Detalhes -->
+<div class="mt-3 text-end">
+    <a class="btn btn-sm btn-outline-warning" role="button"
+       href="{% url 'tripAdvisor:'|add:model_name|add:'_detail' pk=atracao.pk %}">
+        <i class="bi bi-eye me-1"></i> Detalhar
+    </a>
+</div>
+
+
+</div>
+
+</div>
+</div>
+{% endwith %}
+
+{% endfor %}
+
+</div>
+
+<!-- Mensagem de paginação (Se houver mais de 5 resultados) -->
 
 {% if atracoes|length > 5 %}
 
-<div class="text-center mt-4">
+<div class="text-center mt-5">
 <p class="text-muted">Mostrando as primeiras 5 atrações. Use a paginação para ver mais.</p>
 </div>
 {% endif %}

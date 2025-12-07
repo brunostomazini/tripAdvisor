@@ -1,90 +1,138 @@
 {% extends 'base.html' %}
 {% load humanize %}
 
-
 {% block title %}
-  {% if atracoes %}
-    <h1>Lista de Atrações</h1>
-  {% else %}
-    <h1>Nenhuma Atração cadastrada</h1>
-  {% endif %}
-
+  {% if atracoes %}
+    <h1 class="text-center mb-4 text-light">Gerenciamento de Atrações</h1>
+  {% else %}
+    <h1 class="text-center mb-4 text-light">Nenhuma Atração cadastrada</h1>
+  {% endif %}
 {% endblock title %}
 
 {% block content %}
 
 {% if atracoes %}
-  <div class="text-center">
-    
-    {% if perms.tripAdvisor.add_atracao %}
-      <a class="btn btn-outline-success btn-lg"
-        data-bs-toggle="tooltip" data-bs-placement="top"
-        title="Adicionar nova atração"
-        href="{% url 'tripAdvisor:atracao_create' %}"> 
-        <i class="bi bi-plus-circle"></i>
-      </a>
-    {% endif %}
-  </div>
-    <table class ="table table-hover">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Nome</th>
-          <th>Descrição</th>
-          <th>Opções</th>
-        </tr>
-      </thead>
-      <tbody>
-      {% for atracao in atracoes %}
-        <!-- CORRIGIDO: Usa o método 'get_model_name' em vez de acessar __class__ diretamente -->
-        {% with model_name=atracao.get_model_name %}
-        <tr>
-          <td>{{ atracao.id }}</td>
-          
-          <td>{{ atracao.nome }}</td>
-          <td>{{ atracao.descricao|truncatechars:50 }}</td>
-          <td>
-            <div class="d-flex gap-2">
-              
-              {% if perms.tripAdvisor.view_atracao %}
-                <!-- URL dinâmico: tripAdvisor:local_detail ou tripAdvisor:atividade_detail -->
-                <a class="btn btn-outline-secondary btn-lg" role="button"
-                    data-bs-toggle="tooltip" data-bs-placement="top" title="Detalhar Atração"
-                    href="{% url 'tripAdvisor:'|add:model_name|add:'_detail' pk=atracao.pk %}">
-                  <i class="bi bi-eye"></i></a>
-              {% endif %}
-              
-              {% if perms.tripAdvisor.change_atracao %}
-                <a class="btn btn-outline-secondary btn-lg" role="button"
-                    data-bs-toggle="tooltip" data-bs-placement="top" title="Atualizar"
-                    
-                    href="{% url 'tripAdvisor:'|add:model_name|add:'_update' pk=atracao.pk %}">
-                      <i class="bi bi-pencil-square"></i></a>
-              {% endif %}
 
-              {% if perms.tripAdvisor.delete_atracao %}
-                <a class="btn btn-outline-secondary btn-lg"
-                  role="button"
-                  data-bs-toggle="tooltip"
-                  data-bs-placement="top"
-                  title="Deletar"
-                  href="{% url 'tripAdvisor:'|add:model_name|add:'_delete' pk=atracao.pk %}">
-                  <i class="bi bi-trash"></i>
-                </a>
-              {% endif %}
+<!-- Botão de Adicionar centralizado acima da lista de cards -->
+
+<div class="text-center mb-4">
+{% if perms.tripAdvisor.add_atracao %}
+<a class="btn btn-warning btn-lg"
+data-bs-toggle="tooltip" data-bs-placement="top"
+title="Adicionar nova atração"
+href="{% url 'tripAdvisor:atracao_create' %}">
+<i class="bi bi-plus-circle"></i> Adicionar Nova Atração
+</a>
+{% endif %}
+</div>
+
+<!-- NOVO LAYOUT: GRID DE CARDS RESPONSIVO -->
+
+<!-- Define 1 coluna em telas pequenas, 2 em médias e 3 em grandes -->
+
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+{% for atracao in atracoes %}
+{% with model_name=atracao.get_model_name %}
+<div class="col">
+<!-- Card de administração com tema escuro e borda de destaque -->
+<div class="card h-100 bg-dark text-light border-warning shadow-sm">
+<div class="card-body d-flex flex-column">
+<h5 class="card-title text-warning fw-bold mb-1">
+<!-- Exibe Nome (Local) ou Título (Atividade) -->
+{% if atracao.nome %}{{ atracao.nome }}{% else %}{{ atracao.titulo }}{% endif %}
+</h5>
+
+            <!-- ID e Badge do Tipo de Modelo -->
+            <p class="card-text mb-3 small">
+                ID: <span class="fw-bold text-light">{{ atracao.id }}</span>
+                <!-- Ajusta o badge info para ter bom contraste no fundo escuro -->
+                <span class="badge bg-info text-dark ms-2 fw-bold">{{ model_name|capfirst }}</span>
+            </p>
+            
+            <!-- Detalhe da Localização ou Categoria -->
+            <p class="card-text mb-3">
+                <span class="badge bg-secondary me-1">
+                    <i class="bi bi-geo-alt me-1"></i>
+                    {% if model_name == 'local' %}
+                        Local ({% if atracao.endereco %}{{ atracao.endereco.cidade }}{% else %}Sem cidade{% endif %})
+                    {% elif model_name == 'atividade' %}
+                        Atividade ({% if atracao.categoria %}{{ atracao.categoria.nome }}{% else %}Sem categoria{% endif %})
+                    {% else %}
+                        N/A
+                    {% endif %}
+                </span>
+            </p>
+
+            <!-- Descrição Curta -->
+            <p class="card-text text-muted small flex-grow-1">
+                <!-- Usa 'informacoes' (se disponível) ou fallback para 'descricao' -->
+                {% if atracao.informacoes %}
+                    {{ atracao.informacoes|truncatechars:150 }}
+                {% else %}
+                    {{ atracao.descricao|truncatechars:150 }}
+                {% endif %}
+            </p>
+
+            <!-- Botões de Ação CRUD (Mantendo as URLs Dinâmicas) -->
+            <div class="mt-3 text-end">
+                <div class="d-flex gap-2 justify-content-end">
+                    
+                    {% if perms.tripAdvisor.view_atracao %}
+                        <a class="btn btn-outline-secondary btn-sm" role="button"
+                            data-bs-toggle="tooltip" data-bs-placement="top" title="Detalhar"
+                            href="{% url 'tripAdvisor:'|add:model_name|add:'_detail' pk=atracao.pk %}">
+                            <i class="bi bi-eye"></i> Detalhar
+                        </a>
+                    {% endif %}
+                    
+                    {% if perms.tripAdvisor.change_atracao %}
+                        <a class="btn btn-outline-warning btn-sm" role="button"
+                            data-bs-toggle="tooltip" data-bs-placement="top" title="Editar"
+                            href="{% url 'tripAdvisor:'|add:model_name|add:'_update' pk=atracao.pk %}">
+                            <i class="bi bi-pencil-square"></i> Editar
+                        </a>
+                    {% endif %}
+
+                    {% if perms.tripAdvisor.delete_atracao %}
+                        <a class="btn btn-outline-danger btn-sm"
+                            role="button"
+                            data-bs-toggle="tooltip"
+                            data-bs-placement="top"
+                            title="Deletar"
+                            href="{% url 'tripAdvisor:'|add:model_name|add:'_delete' pk=atracao.pk %}">
+                            <i class="bi bi-trash"></i> Deletar
+                        </a>
+                    {% endif %}
+                </div>
             </div>
-          </td>
-        </tr>
-        {% endwith %}
-      {% endfor %}
-      </tbody>
-    </table>
+        </div>
+    </div>
+</div>
+
+
+{% endwith %}
+{% endfor %}
+
+</div>
+
+{% else %}
+
+<!-- Mensagem se não houver atrações -->
+
+<div class="alert alert-warning text-center mt-5" role="alert">
+Nenhuma atração cadastrada no sistema. Use o botão abaixo para começar.
+
+<div class="mt-3">
+{% if perms.tripAdvisor.add_atracao %}
+    <a class="btn btn-warning"
+        href="{% url 'tripAdvisor:atracao_create' %}"> 
+        <i class="bi bi-plus-circle"></i> Adicionar Nova Atração
+    </a>
+{% endif %}
+</div>
+
+
+</div>
+
 {% endif %}
 {% endblock content %}
-
-<!-- 
-{% url 'tripAdvisor:viagem_create' %}
-{% url 'tripAdvisor:viagem_read' atracao.id %}
-{% url 'tripAdvisor:viagem_update' atracao.id %}
-{% url 'tripAdvisor:viagem_delete' atracao.id %}
--->

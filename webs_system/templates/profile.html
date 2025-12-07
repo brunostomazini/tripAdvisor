@@ -47,19 +47,22 @@
 
 <h2 class="text-primary border-bottom pb-2 mb-4"><i class="bi bi-geo-alt"></i> Minhas Viagens</h2>
 
-  {% if viagens %}
-  <p class="lead">Você já registrou <strong>{{ viagens|length }}</strong> viagens:</p>
   <div class="text-center mb-4">
-   
     {% if perms.tripAdvisor.add_viagem %}
       <a class="btn btn-outline-success"
         data-bs-toggle="tooltip" data-bs-placement="top"
-        title="Adicionar nova atração"
+        title="Adicionar nova viagem"
         href="{% url 'tripAdvisor:create_viagem' %}">
         <i class="bi bi-plus-circle"></i> Adicionar Viagem
       </a>
     {% endif %}
+    
   </div>
+  
+
+  {% if viagens %}
+  <p class="lead">Você já registrou <strong>{{ viagens|length }}</strong> viagens:</p>
+  
 
 <!-- INCLUI OS CONTROLES DE ORDENAÇÃO -->
 

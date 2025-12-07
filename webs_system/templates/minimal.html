@@ -1,4 +1,5 @@
 <!doctype html>
+
 <html lang="en" data-bs-theme="dark">
   <head>
     <meta charset="utf-8">
@@ -7,20 +8,20 @@
     <!-- Link para o Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" xintegrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    
+   
     <!-- Estilos globais para reset de margem e menu fixo -->
     <style>
         body {
             margin: 0;
             padding: 0;
-            /* Adiciona um padding ao topo para o menu fixo */
-            padding-top: 60px; 
+            /* Adiciona um padding ao topo para o menu fixo /
+            padding-top: 60px;
         }
-        /* Oculta a barra de rolagem horizontal em telas pequenas */
+        / Oculta a barra de rolagem horizontal em telas pequenas /
         body::-webkit-scrollbar {
             display: none;
         }
-        /* Estilo para o menu: Fixo no topo */
+        / Estilo para o menu: Fixo no topo */
         .navbar-custom {
             position: fixed;
             top: 0;
@@ -40,21 +41,21 @@
         <!-- O conteúdo do menu será injetado aqui -->
       {% endblock menu %}
     </div>
-    
+   
     <!-- Estrutura principal com container e layout de colunas -->
     <div class="container-fluid">
       <div class="row justify-content-center">
-        
+       
         <!-- Coluna esquerda (3 colunas em lg+): AGORA SEM VERIFICAÇÃO CONDICIONAL -->
-        <div class="col-lg-3 d-none d-lg-block">
+        <div class="col-lg-2 d-none d-lg-block">
           {% block left %}
             <!-- Conteúdo da esquerda (ex: Sidebar, navegação lateral) -->
           {% endblock left %}
         </div>
-        
+       
         <!-- Coluna principal: A classe de largura é definida por main_col_class (padrão col-lg-8) -->
-        <div class="col-12 {% block main_col_class %}col-lg-8{% endblock main_col_class %} p-3">
-            
+        <div class="col-lg-8 ">
+           
           <div class="text-center mb-4">
               {% block title %}
                 <!-- Título da página -->
@@ -64,7 +65,7 @@
               <!-- Conteúdo principal da página -->
             {% endblock main %}
         </div>
-        
+       
         <!-- Coluna direita (2 colunas em lg+): AGORA SEM VERIFICAÇÃO CONDICIONAL -->
         <div class="col-lg-2 d-none d-lg-block">
           <div>
@@ -78,7 +79,7 @@
       {% block additional_lines %}
       {% endblock additional_lines %}
     </div>
-    
+   
     <!-- Footer -->
     <div class="container">
       <footer class="navbar navbar-dark d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top bg-dark border-secondary">
@@ -105,4 +106,5 @@
         })
   </script>
   </body>
+
 </html>

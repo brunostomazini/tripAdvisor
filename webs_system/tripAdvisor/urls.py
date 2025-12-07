@@ -15,7 +15,7 @@ urlpatterns = [
 
     path('detail/local/<int:pk>/', LocalDetailView.as_view(),name='local_detail'),
 
-    path('detail/local/<int:pk>/', AtividadeDetailView.as_view(), name='atividade_detail'),
+    path('detail/atividade/<int:pk>/', AtividadeDetailView.as_view(), name='atividade_detail'),
     
     path('create/atracoes/', LocalCreateView.as_view(), name='local_create'),
 
@@ -23,11 +23,11 @@ urlpatterns = [
 
     path('create/', EscolherTipoAtracaoView.as_view(), name='atracao_create'),  
 
-    path('delete/atracoes/<int:pk>/', LocalDeleteView.as_view(), name='local_delete'),  
+    path('delete/local/<int:pk>/', LocalDeleteView.as_view(), name='local_delete'),  
 
-    path('delete/atracoes/<int:pk>/', AtividadeDeleteView.as_view(), name='atividade_delete'),  
+    path('delete/atividade/<int:pk>/', AtividadeDeleteView.as_view(), name='atividade_delete'),  
 
-    path('update/atracoes/<int:pk>/', LocalUpdateView.as_view(), name='local_update'),
+    path('update/local/<int:pk>/', LocalUpdateView.as_view(), name='local_update'),
 
     path('update/atracoes/<int:pk>/', AtividadeUpdateView.as_view(), name='atividade_update'),
 
@@ -44,5 +44,9 @@ urlpatterns = [
 
     path('update/avaliacao/<int:pk>', AvaliacaoUpdateView.as_view(), name='update_avaliacao'),
     
-    path('datail/avaliacao/<int:pk>', AvaliacaoDetailView.as_view(), name='detail_avaliacao')
+    path('datail/avaliacao/<int:pk>', AvaliacaoDetailView.as_view(), name='detail_avaliacao'),
+
+    path('create/avaliacao/<int:pk>', AvaliacaoCreateView.as_view(), name='create_avaliacao'),
+
 ]
+

@@ -15,61 +15,46 @@ class ViagemDetailView(LoginRequiredMixin, PermissionRequiredMixin,DetailView):
 
 class ViagemCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     model = Viagem
-    fields = [
-        'titulo', 'descricao', 'destino', 'pais_destino', 'inicio', 'final', 
-        'orcamento', 'proprosito', 'notas', 'transporte'
-    ]
-    template_name = 'tripAdvisor/create_simple.html'
-    success_url = reverse_lazy('profile')
+    # Usando 'fields' conforme seu código, ou 'form_class = ViagemForm' se preferir usar o Form
+    form_class = ViagemForm
+    template_name = 'tripAdvisor/create_simple.html' 
+    success_url = reverse_lazy('profile') 
     permission_required = 'tripAdvisor.add_viagem'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # CRUCIAL: Injeta o nome do modelo
+        context['form_model_name'] = 'viagem' 
+        return context
     
     def form_valid(self, form):
         form.instance.dono = self.request.user.perfil
         return super().form_valid(form)
 
-"""class ViagemCreateView(LoginRequiredMixin, PermissionRequiredMixin, View):
-    login_url=reverse_lazy('login')
-    permission_required='tripAdvisor.add_viagem'
-
-    def form_valid(self, form):
-        form.instance.dono = self.request.user.perfil
-        return super().form_valid(form)
-
-    @staticmethod
-    def get(request):
-        form = ViagemForm()
-        context = {
-            'form':form
-        }
-        return render(request, 'tripAdvisor/create_simple.html', context)
-    
-    @staticmethod
-    def post(request):
-        form = ViagemForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('profile')
-        context = {
-            'form': form
-        }
-        return render(request, 'tripAdvisor/create_simple.html', context)
-"""
-
-    
+# View de Atualização de Viagem (ADICIONADO get_context_data)
 class ViagemUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
-
     model = Viagem
     form_class = ViagemForm 
     template_name = 'tripAdvisor/create_simple.html'
-    success_url = reverse_lazy('profile') 
+    success_url = reverse_lazy('profile') # Corrigido namespace aqui também
     permission_required = 'tripAdvisor.change_viagem'
 
+    # ADICIONADO: Método para injetar o contexto necessário para o template genérico
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # CRUCIAL: Injeta o nome do modelo
+        context['form_model_name'] = 'viagem' 
+        return context
+    
     def get_queryset(self) -> QuerySet:
         base_qs = super().get_queryset()
         try:
+            # Assumindo que Perfil está acessível via request.user
             user_perfil = self.request.user.perfil
         except Perfil.DoesNotExist:
+            # Retorna um queryset vazio se o perfil não existir
             return base_qs.none()
+        # Filtra para que apenas o dono possa atualizar
         return base_qs.filter(dono=user_perfil)
     
 class ViagemDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):

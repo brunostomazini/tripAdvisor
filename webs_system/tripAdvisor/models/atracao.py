@@ -1,6 +1,5 @@
 from django.db import models
 from .base_model import BaseModel
-from .viagem import Viagem
 from .categoria import Categoria
 from .endereco import Endereco
 from django.core.validators import MinLengthValidator, MinValueValidator, MaxValueValidator

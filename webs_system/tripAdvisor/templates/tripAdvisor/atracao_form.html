@@ -78,7 +78,7 @@
                 <button type="submit" class="btn btn-primary w-100 mt-5 py-2">
                     Salvar Atração
                 </button>
-                <a href="{% url 'tripAdvisor:atracao_create' %}" class="btn btn-outline-secondary w-100 mt-2">
+                <a href="{% url 'tripAdvisor:listar_atracoes' %}" class="btn btn-outline-secondary w-100 mt-2">
                     Voltar para Escolha de Tipo
                 </a>
             </form>
@@ -86,22 +86,18 @@
     </div>
 </div>
 
-<!-- SCRIPT PARA GARANTIR O ESTILO E O TIPO DE INPUT CORRETOS VIA JAVASCRIPT -->
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         
-        // 1. Adiciona a classe 'form-control' a inputs, selects e textareas (que não são checkboxes/radios).
         document.querySelectorAll('input:not([type="checkbox"]):not([type="radio"]), select, textarea').forEach(function(element) {
             element.classList.add('form-control');
         });
 
-        // 2. Adiciona a classe 'form-check-input' aos checkboxes e radios.
         document.querySelectorAll('input[type="checkbox"], input[type="radio"]').forEach(function(element) {
             element.classList.add('form-check-input');
         });
 
-        // 3. CORREÇÃO ESPECÍFICA PARA CAMPOS DE HORA: 
-        // Identifica campos cujo ID ou nome contenham 'hora_abertura' ou 'hora_fechamento' e força o type="time".
         document.querySelectorAll('input[type="text"]').forEach(function(element) {
             const id = element.id || '';
             const name = element.name || '';

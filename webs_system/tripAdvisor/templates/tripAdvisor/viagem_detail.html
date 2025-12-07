@@ -19,6 +19,7 @@ border-primary-subtle rounded-3 mb-3 text-center">
 <div class="card-body text-start">
 
 <!-- INFORMAÇÕES CHAVE (DESTINO, DATAS, ORÇAMENTO) -->
+
 <h5 class="card-title text-primary mb-3"><i class="bi bi-calendar-check-fill"></i> Resumo da Viagem</h5>
 
 <dl class="row">
@@ -41,18 +42,20 @@ border-primary-subtle rounded-3 mb-3 text-center">
             R$ {{ viagem.orcamento|floatformat:2 }}
         </span>
     </dd>
+
 </dl>
 
 <hr>
 
 <!-- DETALHES DO PLANEJAMENTO (PROPÓSITO, TRANSPORTE) -->
+
 <h5 class="card-title text-primary mb-3"><i class="bi bi-airplane-fill"></i> Detalhes do Planejamento</h5>
 
 <dl class="row">
     <!-- Propósito -->
     <dt class="col-sm-3">Propósito:</dt>
     <dd class="col-sm-9">
-        <span class="badge bg-info text-dark">{{ viagem.get_proprosito_display }}</span>
+        <span class="badge bg-info text-dark">{{ viagem.get_proposito_display }}</span>
     </dd>
 
     <!-- Transporte -->
@@ -66,11 +69,46 @@ border-primary-subtle rounded-3 mb-3 text-center">
     <dd class="col-sm-9">
         <p class="card-text">{{ viagem.descricao|default:"Nenhuma descrição fornecida para a viagem." }}</p>
     </dd>
+
 </dl>
 
 <hr>
 
+<!-- NOVA SEÇÃO: ATRAÇÕES (MANY-TO-MANY) - AGORA COM BOTÃO AVALIAR E ESTILO PADRONIZADO -->
+
+<h5 class="card-title text-primary mb-3"><i class="bi bi-camera-fill"></i> Atrações Programadas</h5>
+
+{% if viagem.atracoes.all %}
+
+<div class="row g-3">
+{% for atracao in viagem.atracoes.all %}
+<div class="col-12 col-md-6 col-lg-4">
+{# CLASSES ALTERADAS: bg-light => bg-secondary-subtle e border-secondary-subtle #}
+<div class="p-3 border rounded d-flex justify-content-between align-items-center bg-secondary-subtle border-secondary-subtle">
+{# CLASSE ALTERADA: text-dark => text-secondary-emphasis #}
+<span class="fw-semibold text-secondary-emphasis">{{ atracao.nome }}</span>
+
+    {# O botão Avaliar usa o PK da atração e o nome da URL 'create_avaliacao' que espera 'viagem_pk' #}
+    <a href="{% url 'tripAdvisor:create_avaliacao' pk=atracao.pk %}" class="btn btn-sm btn-outline-primary"
+       title="Avaliar {{ atracao.nome }}">
+        <i class="bi bi-star-fill"></i> Avaliar
+    </a>
+</div>
+
+
+</div>
+{% endfor %}
+</div>
+
+{% else %}
+
+<p class="text-muted">Nenhuma atração programada para esta viagem.</p>
+{% endif %}
+
+<hr>
+
 <!-- NOTAS E METADADOS -->
+
 <h5 class="card-title text-primary mb-3"><i class="bi bi-pencil-square"></i> Notas e Metadados</h5>
 
 <dl class="row">
@@ -80,15 +118,15 @@ border-primary-subtle rounded-3 mb-3 text-center">
         <p class="text-muted">{{ viagem.notas|default:"Sem notas adicionais." }}</p>
     </dd>
 
-    <!-- Criado em -->
+    <!-- Dono -->
+    <dt class="col-sm-3">Dono da Viagem:</dt>
+    <dd class="col-sm-9">{{ viagem.dono.nome }}</dd>
+
+    <!-- Data de Criação (Corrigindo a linha que você mencionou anteriormente) -->
     <dt class="col-sm-3">Criado em:</dt>
     <dd class="col-sm-9">{{ viagem.created_at|date:"d/m/Y H:i" }}</dd>
 
-    <!-- Dono -->
-    <dt class="col-sm-3">Dono da Viagem:</dt>
-    <dd class="col-sm-9">{{ viagem.dono.usuario.username }}</dd>
 </dl>
-
 
 </div>
 

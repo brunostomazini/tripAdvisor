@@ -5,6 +5,7 @@ from django.core.exceptions import ValidationError
 from ..enum import *
 from datetime import date
 from .perfil import Perfil
+from .atracao import Atracao
 from ..managers.viagem_manager import ViagemManager
 
 
@@ -28,8 +29,7 @@ class Viagem(BaseModel):
     )
 
     atracoes = models.ManyToManyField(
-        'Atracao', 
-
+        Atracao, 
         related_name='viagens', 
         verbose_name="Atrações da Viagem",
         blank=True,
